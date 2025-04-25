@@ -1,53 +1,45 @@
-# New Project Template
+# Google Maps iOS 3D SDK Samples
 
-This repository contains a template that can be used to seed a repository for a
-new Google open source project.
+## Description
 
-See [go/releasing](http://go/releasing) (available externally at
-https://opensource.google/documentation/reference/releasing) for more information about
-releasing a new Google open source project.
+Description will go here.
 
-This template uses the Apache license, as is Google's default.  See the
-documentation for instructions on using alternate license.
+## Requirements
 
-## How to use this template
+XCode 16 or later.
+Physical device for running the app if possible. iOS Simulator will not perform well, but can be used.
 
-1. Clone it from GitHub.
-    * There is no reason to fork it.
-1. Create a new local repository and copy the files from this repo into it.
-1. Modify README.md and docs/contributing.md to represent your project, not the
-   template project.
-1. Develop your new project!
+## Setup
 
-``` shell
-git clone https://github.com/google/new-project
-mkdir my-new-thing
-cd my-new-thing
-git init
-cp -r ../new-project/* ../new-project/.github .
-git add *
-git commit -a -m 'Boilerplate for new Google open source project'
-```
+1. Set up a project.
+2. Get an API key.
+3. Clone this repository.
+4. Open the folder. Add your API key to the project.
+5. Build and run the App
 
-## Source Code Headers
+## Usage
 
-Every file containing source code must include copyright and license
-information. This includes any JS/CSS files that you might be serving out to
-browsers. (This is to help well-intentioned people avoid accidental copying that
-doesn't comply with the license.)
+A list of samples is presented on the App screen at startup. These
+samples each demonstrate a specifica capability or set of capabilities of the SDK.
 
-Apache header:
+## Documentation
 
-    Copyright 2024 Google LLC
+Links to be proviced when available.
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+## Contributing.
 
-        https://www.apache.org/licenses/LICENSE-2.0
+We are not accepting contributions at this time.
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+## Terms of Service
+
+This repository uses Google Maps Platform services. Use of Google Maps Platform services through this library is subject to the Google Maps Platform [Terms of Service](https://cloud.google.com/maps-platform/terms).
+
+This repository is not a Google Maps Platform Core Service. Therefore, the Google Maps Platform Terms of Service (e.g. Technical Support Services, Service Level Agreements, and Deprecation Policy) do not apply to the code in this repository.
+
+## Support
+
+This repository is offered via an open source [license](LICENSE). It is not governed by the Google Maps Platform Support [Technical Support Services Guidelines](https://cloud.google.com/maps-platform/terms/tssg), the [SLA](https://cloud.google.com/maps-platform/terms/sla), or the [Deprecation Policy](https://cloud.google.com/maps-platform/terms) (however, any Google Maps Platform services used by the library remain subject to the Google Maps Platform Terms of Service).
+
+If you find a bug, or have a feature request, please [file an issue](https://github.com/googlemaps-samples/ios-maps-3d-sdk-samples/issues) on GitHub. If you would like to get answers to technical questions from other Google Maps Platform developers, ask through one of our [developer community channels](https://developers.google.com/maps/developer-community). 
+
+You can also discuss this library on our [Discord server](https://discord.gg/hYsWbmk).
