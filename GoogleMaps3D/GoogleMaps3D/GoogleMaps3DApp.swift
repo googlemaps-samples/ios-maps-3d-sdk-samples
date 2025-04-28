@@ -15,7 +15,7 @@
 import SwiftUI
 
 @main
-struct SampleApp: App {
+struct GoogleMaps3DApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()

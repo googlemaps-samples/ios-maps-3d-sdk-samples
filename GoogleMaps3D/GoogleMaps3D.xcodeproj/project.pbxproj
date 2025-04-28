@@ -7,19 +7,19 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		9DCE69E22DBBBC5700A76B23 /* GoogleMaps3DSampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoogleMaps3DSampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9DCE69FC2DBFD50900A76B23 /* GoogleMaps3D.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoogleMaps3D.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		9DCE69E42DBBBC5700A76B23 /* SampleApp */ = {
+		9DCE69FE2DBFD50900A76B23 /* GoogleMaps3D */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = SampleApp;
+			path = GoogleMaps3D;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		9DCE69DF2DBBBC5700A76B23 /* Frameworks */ = {
+		9DCE69F92DBFD50900A76B23 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -29,18 +29,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		9DCE69D92DBBBC5700A76B23 = {
+		9DCE69F32DBFD50900A76B23 = {
 			isa = PBXGroup;
 			children = (
-				9DCE69E42DBBBC5700A76B23 /* SampleApp */,
-				9DCE69E32DBBBC5700A76B23 /* Products */,
+				9DCE69FE2DBFD50900A76B23 /* GoogleMaps3D */,
+				9DCE69FD2DBFD50900A76B23 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		9DCE69E32DBBBC5700A76B23 /* Products */ = {
+		9DCE69FD2DBFD50900A76B23 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				9DCE69E22DBBBC5700A76B23 /* GoogleMaps3DSampleApp.app */,
+				9DCE69FC2DBFD50900A76B23 /* GoogleMaps3D.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,64 +48,64 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		9DCE69E12DBBBC5700A76B23 /* GoogleMaps3DSampleApp */ = {
+		9DCE69FB2DBFD50900A76B23 /* GoogleMaps3D */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9DCE69F02DBBBC5700A76B23 /* Build configuration list for PBXNativeTarget "GoogleMaps3DSampleApp" */;
+			buildConfigurationList = 9DCE6A0A2DBFD50B00A76B23 /* Build configuration list for PBXNativeTarget "GoogleMaps3D" */;
 			buildPhases = (
-				9DCE69DE2DBBBC5700A76B23 /* Sources */,
-				9DCE69DF2DBBBC5700A76B23 /* Frameworks */,
-				9DCE69E02DBBBC5700A76B23 /* Resources */,
+				9DCE69F82DBFD50900A76B23 /* Sources */,
+				9DCE69F92DBFD50900A76B23 /* Frameworks */,
+				9DCE69FA2DBFD50900A76B23 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				9DCE69E42DBBBC5700A76B23 /* SampleApp */,
+				9DCE69FE2DBFD50900A76B23 /* GoogleMaps3D */,
 			);
-			name = GoogleMaps3DSampleApp;
+			name = GoogleMaps3D;
 			packageProductDependencies = (
 			);
-			productName = GoogleMaps3DSampleApp;
-			productReference = 9DCE69E22DBBBC5700A76B23 /* GoogleMaps3DSampleApp.app */;
+			productName = GoogleMaps3D;
+			productReference = 9DCE69FC2DBFD50900A76B23 /* GoogleMaps3D.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		9DCE69DA2DBBBC5700A76B23 /* Project object */ = {
+		9DCE69F42DBFD50900A76B23 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1600;
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
-					9DCE69E12DBBBC5700A76B23 = {
+					9DCE69FB2DBFD50900A76B23 = {
 						CreatedOnToolsVersion = 16.0;
 					};
 				};
 			};
-			buildConfigurationList = 9DCE69DD2DBBBC5700A76B23 /* Build configuration list for PBXProject "GoogleMaps3DSampleApp" */;
+			buildConfigurationList = 9DCE69F72DBFD50900A76B23 /* Build configuration list for PBXProject "GoogleMaps3D" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = 9DCE69D92DBBBC5700A76B23;
+			mainGroup = 9DCE69F32DBFD50900A76B23;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 9DCE69E32DBBBC5700A76B23 /* Products */;
+			productRefGroup = 9DCE69FD2DBFD50900A76B23 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				9DCE69E12DBBBC5700A76B23 /* GoogleMaps3DSampleApp */,
+				9DCE69FB2DBFD50900A76B23 /* GoogleMaps3D */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		9DCE69E02DBBBC5700A76B23 /* Resources */ = {
+		9DCE69FA2DBFD50900A76B23 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -115,7 +115,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		9DCE69DE2DBBBC5700A76B23 /* Sources */ = {
+		9DCE69F82DBFD50900A76B23 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -125,7 +125,7 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		9DCE69EE2DBBBC5700A76B23 /* Debug */ = {
+		9DCE6A082DBFD50B00A76B23 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -188,7 +188,7 @@
 			};
 			name = Debug;
 		};
-		9DCE69EF2DBBBC5700A76B23 /* Release */ = {
+		9DCE6A092DBFD50B00A76B23 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -244,16 +244,14 @@
 			};
 			name = Release;
 		};
-		9DCE69F12DBBBC5700A76B23 /* Debug */ = {
+		9DCE6A0B2DBFD50B00A76B23 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"SampleApp/Preview Content\"";
-				DEVELOPMENT_TEAM = 683JHFZ83X;
+				DEVELOPMENT_ASSET_PATHS = "\"GoogleMaps3D/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -266,25 +264,22 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.GoogleMaps3DSamples.GoogleMaps3DSampleApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.GoogleMaps3D.GoogleMaps3D;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		9DCE69F22DBBBC5700A76B23 /* Release */ = {
+		9DCE6A0C2DBFD50B00A76B23 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"SampleApp/Preview Content\"";
-				DEVELOPMENT_TEAM = 683JHFZ83X;
+				DEVELOPMENT_ASSET_PATHS = "\"GoogleMaps3D/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -297,9 +292,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.GoogleMaps3DSamples.GoogleMaps3DSampleApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.GoogleMaps3D.GoogleMaps3D;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -309,25 +303,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		9DCE69DD2DBBBC5700A76B23 /* Build configuration list for PBXProject "GoogleMaps3DSampleApp" */ = {
+		9DCE69F72DBFD50900A76B23 /* Build configuration list for PBXProject "GoogleMaps3D" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				9DCE69EE2DBBBC5700A76B23 /* Debug */,
-				9DCE69EF2DBBBC5700A76B23 /* Release */,
+				9DCE6A082DBFD50B00A76B23 /* Debug */,
+				9DCE6A092DBFD50B00A76B23 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9DCE69F02DBBBC5700A76B23 /* Build configuration list for PBXNativeTarget "GoogleMaps3DSampleApp" */ = {
+		9DCE6A0A2DBFD50B00A76B23 /* Build configuration list for PBXNativeTarget "GoogleMaps3D" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				9DCE69F12DBBBC5700A76B23 /* Debug */,
-				9DCE69F22DBBBC5700A76B23 /* Release */,
+				9DCE6A0B2DBFD50B00A76B23 /* Debug */,
+				9DCE6A0C2DBFD50B00A76B23 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 9DCE69DA2DBBBC5700A76B23 /* Project object */;
+	rootObject = 9DCE69F42DBFD50900A76B23 /* Project object */;
 }
