@@ -39,4 +39,13 @@ extension Camera {
     heading: 25,
     tilt: 20,
     range: 4200)
+
+  public static var innsbruck: Camera = .init(
+    longitude: 11.3704,
+    latitude: 47.263,
+    altitude: 640.08,
+    heading: 237,
+    tilt: 80.0,
+    roll: 0.0,
+    range: 200)
 }

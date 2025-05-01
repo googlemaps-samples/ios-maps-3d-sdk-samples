@@ -39,6 +39,9 @@ struct GoogleMaps3DDemoApp: App {
           NavigationLink(destination: PlaceTapDemo()) {
             Text("Place Tap Demo")
           }
+          NavigationLink(destination: FlyAlongRouteDemo()) {
+            Text("Flight Path  Demo")
+          }
         }
       }
 
