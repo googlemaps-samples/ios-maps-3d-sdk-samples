@@ -24,4 +24,12 @@ extension Camera {
     tilt: 75.0,
     roll: 0.0,
     range: 100)
+
+  public static var seattle: Camera = .init(
+    longitude: -122.3496903,
+    latitude: 47.6210296,
+    heading: 149.0,
+    tilt: 77.0,
+    roll: 0.0,
+    range: 4000)
 }

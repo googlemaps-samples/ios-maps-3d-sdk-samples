@@ -25,7 +25,7 @@ struct GoogleMaps3DDemoApp: App {
             Text("Basic Map")
           }
           NavigationLink(destination: CameraDemo()) {
-            Text("CameraDemo")
+            Text("Camera Demo")
           }
           NavigationLink(destination: MarkerDemo()) {
             Text("Marker Demo")

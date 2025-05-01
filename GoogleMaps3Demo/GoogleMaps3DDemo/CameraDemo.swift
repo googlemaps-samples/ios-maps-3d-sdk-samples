@@ -17,10 +17,32 @@ import GoogleMaps3D
 
 struct CameraDemo: View {
   @State var camera: Camera = .sanFrancisco
+  @State private var animate: Bool = false
+  @State private var flyAround: Bool = false
+
   var body: some View {
     VStack {
       Map(camera: $camera, mode: .hybrid)
+        .flyCameraTo(
+          .seattle,
+          duration: 5,
+          trigger: animate,
+          completion: { flyAround = true }
+        )
+        .flyCameraAround(
+          .seattle,
+          duration: 90,
+          rounds: 3,
+          trigger: flyAround,
+          callback: {  }
+        )
+      Button("Start Flying") {
+        animate.toggle()
+      }
     }
   }
 }
 
+#Preview {
+  CameraDemo()
+}
