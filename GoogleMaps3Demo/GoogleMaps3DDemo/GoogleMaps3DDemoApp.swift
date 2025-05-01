@@ -30,6 +30,9 @@ struct GoogleMaps3DDemoApp: App {
           NavigationLink(destination: MarkerDemo()) {
             Text("Marker Demo")
           }
+          NavigationLink(destination: ModelDemo()) {
+            Text("Model Demo")
+          }
         }
       }
 
