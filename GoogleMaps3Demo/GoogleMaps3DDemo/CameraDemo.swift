@@ -15,28 +15,12 @@
 import SwiftUI
 import GoogleMaps3D
 
-@main
-struct GoogleMaps3DDemoApp: App {
-  var body: some Scene {
-    WindowGroup {
-      NavigationView {
-        List {
-          NavigationLink(destination: Map(mode: .hybrid)) {
-            Text("Basic Map")
-          }
-          NavigationLink(destination: CameraDemo()) {
-            Text("CameraDemo")
-          }
-          NavigationLink(destination: MarkerDemo()) {
-            Text("Marker Demo")
-          }
-        }
-      }
-
-      .onAppear {
-        //Map.apiKey = "YOUR_API_KEY" //replace with your API Key
-        //But DON'T check the API key into source control!
-      }
+struct CameraDemo: View {
+  @State var camera: Camera = .sanFrancisco
+  var body: some View {
+    VStack {
+      Map(camera: $camera, mode: .hybrid)
     }
   }
 }
+
