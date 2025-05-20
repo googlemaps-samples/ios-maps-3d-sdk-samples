@@ -27,6 +27,9 @@ struct GoogleMaps3DDemoApp: App {
           NavigationLink(destination: CameraDemo()) {
             Text("Camera Demo")
           }
+          NavigationLink(destination: CameraRestrictionDemo()) {
+            Text("Camera Restrictions Demo")
+          }
           NavigationLink(destination: MarkerDemo()) {
             Text("Marker Demo")
           }
@@ -40,7 +43,10 @@ struct GoogleMaps3DDemoApp: App {
             Text("Place Tap Demo")
           }
           NavigationLink(destination: FlyAlongRouteDemo()) {
-            Text("Flight Path  Demo")
+            Text("Flight Path Demo")
+          }
+          NavigationLink(destination: MarkerCollisionDemo()) {
+            Text("Marker Collision Demo")
           }
         }
       }
