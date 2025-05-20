@@ -34,3 +34,7 @@ struct CameraRestrictionDemo: View {
       ])
   }
 }
+
+#Preview {
+  CameraRestrictionDemo()
+}

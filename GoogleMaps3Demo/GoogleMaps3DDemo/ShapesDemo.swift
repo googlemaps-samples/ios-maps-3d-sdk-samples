@@ -70,3 +70,7 @@ var polyline: Polyline = .init(coordinates: [
   ],
   altitudeMode: .relativeToGround)
   .style(GoogleMaps3D.Polygon.StyleOptions(fillColor:.red, extruded: true) )
+
+#Preview {
+  ShapesDemo()
+}

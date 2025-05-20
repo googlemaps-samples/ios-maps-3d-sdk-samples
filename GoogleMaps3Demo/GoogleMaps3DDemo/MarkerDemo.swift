@@ -54,3 +54,7 @@ struct MarkerDemo: View {
     }
   }
 }
+
+#Preview {
+  MarkerDemo()
+}

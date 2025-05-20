@@ -63,3 +63,7 @@ struct FlyAlongRouteDemo: View {
     )
   }
 }
+
+#Preview {
+  FlyAlongRouteDemo()
+}
