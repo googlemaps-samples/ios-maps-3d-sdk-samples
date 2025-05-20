@@ -31,8 +31,8 @@ struct CameraDemo: View {
         )
         .flyCameraAround(
           .seattle,
-          duration: 90,
-          rounds: 3,
+          duration: 15,
+          rounds: 0.5,
           trigger: flyAround,
           callback: {  }
         )

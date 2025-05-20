@@ -28,7 +28,7 @@ on:
     workflow_dispatch:
 
 jobs:
-    build-GooglePlacesDemos:
+    build-GoogleMaps3DDemos:
         runs-on: macos-latest
 
         steps:

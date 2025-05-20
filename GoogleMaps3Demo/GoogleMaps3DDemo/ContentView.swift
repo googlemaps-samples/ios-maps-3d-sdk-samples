@@ -13,16 +13,12 @@
 // limitations under the License.
 
 import SwiftUI
+import GoogleMaps3D
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+      //minimum configuration 3D Map
+      Map(mode: .hybrid)
     }
 }
 

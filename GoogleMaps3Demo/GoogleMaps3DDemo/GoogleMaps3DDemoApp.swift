@@ -46,8 +46,22 @@ struct GoogleMaps3DDemoApp: App {
       }
 
       .onAppear {
-        //Map.apiKey = "YOUR_API_KEY" //replace with your API Key
-        //But DON'T check the API key into source control!
+        /*
+         API Key Setup:
+         1. Get an API key using teh instructions at: https://developers.google.com/maps/documentation/maps-3d/ios-sdk/setup#create-project
+         2. Create a .xcconfig file at the project root level
+         3. Add this line: MAPS_API_KEY = your_api_key_here
+         4. Replace "your_api_key_here" with the API key obtained in step 3
+
+         Note: Never commit your actual API key to source control
+        */
+        guard let infoDictionary: [String: Any] = Bundle.main.infoDictionary else {
+          fatalError("Info.plist not found")
+        }
+        guard let apiKey: String = infoDictionary["MAPS_API_KEY"] as? String else {
+          fatalError("MAPS_API_KEY not set in Info.plist")
+        }
+        Map.apiKey = apiKey
       }
     }
   }

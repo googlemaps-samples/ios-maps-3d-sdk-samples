@@ -41,15 +41,15 @@ var polyline: Polyline = .init(coordinates: [
     LatLngAltitude(latitude: 37.78618687561075, longitude: -122.398969592545, altitude: 0),
     LatLngAltitude(latitude: 37.7892310309145, longitude: -122.3951458683092, altitude: 0),
     LatLngAltitude(latitude: 37.7916358762409, longitude: -122.3981969390652, altitude: 0)
-  ],
-  altitudeMode:  .clampToGround,
-  strokeStyle: GoogleMaps3D.Polyline.StrokeStyle(
+  ])
+  .stroke(GoogleMaps3D.Polyline.StrokeStyle(
     strokeColor: UIColor(red: 0.09803921568627451, green: 0.403921568627451, blue: 0.8235294117647058, alpha: 1),
     strokeWidth: 10.0,
     outerColor: .white,
     outerWidth: 0.2
-    ),
-  contourStyle: GoogleMaps3D.Polyline.ContourStyle(isGeodesic: true))
+    ))
+  .contour(GoogleMaps3D.Polyline.ContourStyle(isGeodesic: true))
+
 
   var originPolygon: Polygon = .init(outerCoordinates: [
     LatLngAltitude(latitude: 37.79165766856578, longitude:  -122.3983762901255, altitude: 300),
@@ -58,9 +58,8 @@ var polyline: Polyline = .init(coordinates: [
     LatLngAltitude(latitude: 37.79178986470217, longitude:  -122.3982041104199, altitude: 300),
     LatLngAltitude(latitude: 37.79165766856578, longitude:  -122.3983762901255, altitude: 300 )
   ],
-  innerCoordinates: [],
-  altitudeMode:  .relativeToGround
-  ).styleOptions(styleOptions: GoogleMaps3D.Polygon.StyleOptions(fillColor:.green, extruded: true) )
+  altitudeMode: .relativeToGround)
+  .style(GoogleMaps3D.Polygon.StyleOptions(fillColor:.green, extruded: true) )
 
   var destinationPolygon: Polygon = .init(outerCoordinates: [
       LatLngAltitude(latitude: 37.80515661739527, longitude:  -122.4034307490334, altitude: 300),
@@ -69,6 +68,5 @@ var polyline: Polyline = .init(coordinates: [
       LatLngAltitude(latitude: 37.80529346901115, longitude:  -122.4032622466595, altitude: 300),
       LatLngAltitude(latitude: 37.80515661739527, longitude:  -122.4034307490334, altitude: 300 )
   ],
-  innerCoordinates: [],
-  altitudeMode:  .relativeToGround
-  ).styleOptions(styleOptions: GoogleMaps3D.Polygon.StyleOptions(fillColor:.red, extruded: true) )
+  altitudeMode: .relativeToGround)
+  .style(GoogleMaps3D.Polygon.StyleOptions(fillColor:.red, extruded: true) )

@@ -53,8 +53,8 @@ struct FlyAlongRouteDemo: View {
 
   func makeCamera(step: FlightPathLocation) -> Camera {
     return .init(
-      longitude: step.longitude,
       latitude: step.latitude,
+      longitude: step.longitude,
       altitude: step.altitude,
       heading: step.bearing,
       tilt: 75,
