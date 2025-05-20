@@ -11,8 +11,8 @@ adding markers and models, handling click events on Place markers, and animating
 
 ## Requirements
 
-XCode 16 or later.
-Physical device for running the app if possible. 
+* XCode 115 or later.
+* A physical iOS device for running the app if possible. 
 At this first Experimental release stage, the iOS Simulator may not perform well, but can be used.
 
 ## Setup
@@ -20,13 +20,16 @@ At this first Experimental release stage, the iOS Simulator may not perform well
 1. Choose an exiting Google Cloud project, or create a new one.
 2. Get an API key for the iOS 3D Maps SDK.
 3. Clone this repository.
-4. Open the folder in XCode. Add your API key to the project.
-5. Build and run the App.
+4. Open the folder in XCode. 
+5. Add your API key to the project using an .xcconfig file or Info.plist to specify the value for a key called MAPS_API_KEY
+6. Build and run the App.
 
 ## Usage
 
 A list of samples is presented on the App screen at startup. These
-samples each demonstrate a specifica capability or set of capabilities of the SDK.
+samples each demonstrate a specific capability or set of capabilities of the SDK.
+
+Click each item in the list to see the demo.
 
 ## Documentation
 
@@ -34,7 +37,7 @@ Links to be provided when available.
 
 ## Contributing.
 
-We are not accepting contributions at this time.
+We are happy to accept contributions in accordance with the [Contributions policy](CONTRIBUTING.md).
 
 ## Terms of Service
 
