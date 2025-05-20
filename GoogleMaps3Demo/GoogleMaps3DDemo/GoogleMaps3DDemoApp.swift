@@ -21,7 +21,7 @@ struct GoogleMaps3DDemoApp: App {
     WindowGroup {
       NavigationView {
         List {
-          NavigationLink(destination: Map(mode: .hybrid)) {
+          NavigationLink(destination: ContentView()) {
             Text("Basic Map")
           }
           NavigationLink(destination: CameraDemo()) {
