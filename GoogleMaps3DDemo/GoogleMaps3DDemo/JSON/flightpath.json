@@ -1,0 +1,156 @@
+{
+  "flight": [
+    {
+      "timestamp": 1712018310000,
+      "latitude": 47.3844,
+      "longitude": 11.8412,
+      "altitude": 2872.74,
+      "bearing": 237,
+      "speed": 240.0
+    },
+    {
+      "timestamp": 1712018327000,
+      "latitude": 47.3755,
+      "longitude": 11.8185,
+      "altitude": 2857.5,
+      "bearing": 243,
+      "speed": 215.0
+    },
+    {
+      "timestamp": 1712018344000,
+      "latitude": 47.3687,
+      "longitude": 11.7966,
+      "altitude": 2743.20,
+      "bearing": 248,
+      "speed": 215.0
+    },
+    {
+      "timestamp": 1712018374000,
+      "latitude": 47.3573,
+      "longitude": 11.7554,
+      "altitude": 2545.08,
+      "bearing": 248,
+      "speed": 211.0
+    },
+    {
+      "timestamp": 1712018404000,
+      "latitude": 47.3464,
+      "longitude": 11.7159,
+      "altitude": 2346.96,
+      "bearing": 248,
+      "speed": 210.0
+    },
+    {
+      "timestamp": 1712018434000,
+      "latitude": 47.3353,
+      "longitude": 11.676,
+      "altitude": 2141.22,
+      "bearing": 247,
+      "speed": 200.0
+    },
+    {
+      "timestamp": 1712018464000,
+      "latitude": 47.325,
+      "longitude": 11.6385,
+      "altitude": 1958.34,
+      "bearing": 248,
+      "speed": 200.0
+    },
+    {
+      "timestamp": 1712018494000,
+      "latitude": 47.3141,
+      "longitude": 11.5999,
+      "altitude": 1767.84,
+      "bearing": 248,
+      "speed": 200.0
+    },
+    {
+      "timestamp": 1712018524000,
+      "latitude": 47.3031,
+      "longitude": 11.5603,
+      "altitude": 1569.72,
+      "bearing": 248,
+      "speed": 210.0
+    },
+    {
+      "timestamp": 1712018555000,
+      "latitude": 47.292,
+      "longitude": 11.5206,
+      "altitude": 1363.98,
+      "bearing": 248,
+      "speed": 210.0
+    },
+    {
+      "timestamp": 1712018585000,
+      "latitude": 47.2809,
+      "longitude": 11.4809,
+      "altitude": 1165.86,
+      "bearing": 247,
+      "speed": 180.0
+    },
+    {
+      "timestamp": 1712018601000,
+      "latitude": 47.2758,
+      "longitude": 11.4629,
+      "altitude": 1074.42,
+      "bearing": 248,
+      "speed": 170.0
+    },
+    {
+      "timestamp": 1712018616000,
+      "latitude": 47.2718,
+      "longitude": 11.4476,
+      "altitude": 998.22,
+      "bearing": 253,
+      "speed": 165.0
+    },
+    {
+      "timestamp": 1712018618000,
+      "latitude": 47.2715,
+      "longitude": 11.4459,
+      "altitude": 990.6,
+      "bearing": 254,
+      "speed": 160.0
+    },
+    {
+      "timestamp": 1712018635000,
+      "latitude": 47.2692,
+      "longitude": 11.428,
+      "altitude": 906.78,
+      "bearing": 261,
+      "speed": 150.0
+    },
+    {
+      "timestamp": 1712018651000,
+      "latitude": 47.2674,
+      "longitude": 11.4113,
+      "altitude": 830.58,
+      "bearing": 261,
+      "speed": 130.0
+    },
+    {
+      "timestamp": 1712018667000,
+      "latitude": 47.2662,
+      "longitude": 11.3993,
+      "altitude": 769.62,
+      "bearing": 261,
+      "speed": 124.0
+    },
+    {
+      "timestamp": 1712018685000,
+      "latitude": 47.2644,
+      "longitude": 11.3827,
+      "altitude": 693.42,
+      "bearing": 261,
+      "speed": 120.0
+    },
+    {
+      "timestamp": 1712018701000,
+      "latitude": 47.263,
+      "longitude": 11.3704,
+      "altitude": 640.08,
+      "bearing": 261,
+      "speed": 120.0
+    }
+  ]
+}
