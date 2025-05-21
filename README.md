@@ -1,13 +1,11 @@
-# Google Maps iOS 3D SDK Samples
+# Google Maps Platform Maps 3D SDK for iOS Samples
 
 ## Description
 
 This is the sample app for the Google Maps iOS 3D Maps SDK. 
 
-It contains a number of sample views that demonstrate the 
-major features of the SDK: displaying a map, controlling the camera,
-adding markers and models, handling click events on Place markers, and animating views.
-
+It demonstrates various features of the SDK: displaying a map, controlling the camera,
+adding markers, shapes and models, handling click events on Place markers, and animating views.
 
 ## Requirements
 
@@ -17,12 +15,12 @@ At this first Experimental release stage, the iOS Simulator may not perform well
 
 ## Setup
 
-1. Choose an exiting Google Cloud project, or create a new one.
+1. Choose an existing Google Cloud project, or create a new one.
 2. Get an API key for the iOS 3D Maps SDK.
 3. Clone this repository.
-4. Open the folder in XCode. 
-5. Add your API key to the project using an .xcconfig file or Info.plist to specify the value for a key called MAPS_API_KEY
-6. Build and run the App.
+4. Open the project in Xcode. 
+5. Add your API key to the project using an .xcconfig file or Info.plist to specify a value for MAPS_API_KEY
+6. Build and run the app.
 
 ## Usage
 
@@ -33,7 +31,7 @@ Click each item in the list to see the demo.
 
 ## Documentation
 
-Links to be provided when available.
+Links will be provided when available.
 
 ## Contributing.
 
