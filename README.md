@@ -11,7 +11,7 @@ adding markers and models, handling click events on Place markers, and animating
 
 ## Requirements
 
-* XCode 115 or later.
+* XCode 15 or later.
 * A physical iOS device for running the app if possible. 
 At this first Experimental release stage, the iOS Simulator may not perform well, but can be used.
 
