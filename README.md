@@ -16,11 +16,12 @@ At this first Experimental release stage, the iOS Simulator may not perform well
 ## Setup
 
 1. Choose an existing Google Cloud project, or create a new one.
-2. Get an API key for the iOS 3D Maps SDK.
-3. Clone this repository.
-4. Open the project in Xcode. 
-5. Add your API key to the project using an .xcconfig file or Info.plist to specify a value for MAPS_API_KEY
-6. Build and run the app.
+2. Enable the Maps 3D SDK for iOS on your project.
+3. Create an API key.
+4. Clone this repository.
+5. Open the project in Xcode. 
+6. Add your API key to the project. Use an .xcconfig file or edit Info.plist to specify a value for MAPS_API_KEY
+7. Build and run the app.
 
 ## Usage
 
