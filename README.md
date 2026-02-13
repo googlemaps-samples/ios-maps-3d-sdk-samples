@@ -32,7 +32,8 @@ Click each item in the list to see the demo.
 
 ## Documentation
 
-Links will be provided when available.
+See the [developer guide](https://developers.google.com/maps/documentation/maps-3d/ios-sdk) and 
+[reference documentation](https://developers.google.com/maps/documentation/maps-3d/ios-sdk/reference).
 
 ## Contributing.
 

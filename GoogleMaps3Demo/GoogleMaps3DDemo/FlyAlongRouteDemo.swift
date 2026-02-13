@@ -1,3 +1,5 @@
+// Copyright 2026 Google LLC
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 import GoogleMaps3D
 import SwiftUI
 
+@MainActor
 struct FlyAlongRouteDemo: View {
   @State private var camera: Camera = .innsbruck
   @State private var flyToDuration: TimeInterval = 5
@@ -23,21 +25,30 @@ struct FlyAlongRouteDemo: View {
 
   var body: some View {
     VStack {
-      Map(camera: $camera, mode: .hybrid)
-        .keyframeAnimator(
-          initialValue: makeCamera(step: flightData.flightPathData.flight[0]),
-          trigger: animation,
-          content: { view, value in
-            Map(camera: .constant(value), mode: .hybrid)
-          },
-          keyframes: { _ in
-            KeyframeTrack(content: {
-              for i in  1...flightData.flightPathData.flight.count-1 {
-                makeKeyFrame(step: flightData.flightPathData.flight[i])
+      if let first = flightData.flightPathData.flight.first {
+        Map(camera: $camera, mode: .hybrid)
+          .keyframeAnimator(
+            initialValue: makeCamera(step: first),
+            trigger: animation,
+            content: { view, value in
+              Map(camera: .constant(value), mode: .hybrid)
+            },
+            keyframes: { _ in
+              KeyframeTrack {
+                let steps = flightData.flightPathData.flight
+                //if steps.count > 1 {
+                  for i in 2..<steps.count {
+                    makeKeyFrame(step: steps[i])
+                  }
+                //}
               }
-            })
-          }
-        )
+            }
+          )
+      } else {
+        // Optional: placeholder while data loads
+        Map(camera: $camera, mode: .hybrid)
+      }
+
       Button("Fly Along Route"){
         animation.toggle()
       }
@@ -53,9 +64,7 @@ struct FlyAlongRouteDemo: View {
 
   func makeCamera(step: FlightPathLocation) -> Camera {
     return .init(
-      latitude: step.latitude,
-      longitude: step.longitude,
-      altitude: step.altitude,
+      center: .init(latitude: step.latitude, longitude: step.longitude, altitude: step.altitude),
       heading: step.bearing,
       tilt: 75,
       roll: 0,
