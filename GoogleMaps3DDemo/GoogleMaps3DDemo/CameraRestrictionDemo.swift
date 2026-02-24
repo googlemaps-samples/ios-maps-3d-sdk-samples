@@ -17,8 +17,7 @@ import SwiftUI
 
 struct CameraRestrictionDemo: View {
   @State var camera:Camera = .init(
-    latitude: 37.7905,
-    longitude: -122.3989,
+    center: .init(latitude: 37.7905, longitude: -122.3989,) as LatLngAltitude,
     heading: 279,
     tilt: 71,
     range: 2500
@@ -27,7 +26,7 @@ struct CameraRestrictionDemo: View {
   var body: some View {
     Map(camera: $camera, mode: .hybrid)
       .cameraRestrictions([
-        .bounds(latitude: 37.7...37.8, longitude: (-122.4)...(-122.3)),
+        .bounds(.init(latitude: 37.7...37.8, longitude: (-122.4)...(-122.3))),
         .altitude(1000...10000),
         .heading(90...300),
         .tilt(30...90)

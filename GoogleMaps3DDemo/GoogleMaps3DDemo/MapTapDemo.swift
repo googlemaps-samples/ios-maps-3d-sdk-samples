@@ -1,3 +1,11 @@
+//
+//  MapTapDemo.swift
+//  GoogleMaps3DDemo
+//
+//  Created by Ed Boiling on 24/02/2026.
+//
+
+
 // Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,25 +23,33 @@
 import GoogleMaps3D
 import SwiftUI
 
-struct PlaceTapDemo: View {
+struct MapTapDemo: View {
   @State var camera: Camera = .sanFrancisco
   @State var isPresented = false
-  @State var tapInfo: PlaceTapInfo?
+  @State var tapInfo: MapTapInfo?
+  @State var alertMessage: String = ""
 
   var body: some View {
     Map(camera: $camera, mode: .hybrid)
-      .onPlaceTap { tapInfo in
+      .onTap { tapInfo in
         self.tapInfo = tapInfo
-        isPresented.toggle()
+        isPresented = true
+        switch tapInfo.content {
+          case .map:
+            alertMessage = "Map tapped"
+          case .place(let placeId):
+            alertMessage = "Place tapped: \(placeId)"
+          default:
+            alertMessage = "Unknown tap"
+        }
       }
       .alert(
-        "Place tapped - \(tapInfo?.placeId ?? "nil")",
+        alertMessage,
         isPresented: $isPresented,
         actions: { Button("OK") {} }
       )
   }
 }
 #Preview {
-  PlaceTapDemo()
+  MapTapDemo()
 }
-
