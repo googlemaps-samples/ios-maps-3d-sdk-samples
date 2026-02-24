@@ -1,11 +1,3 @@
-//
-//  MapTapDemo.swift
-//  GoogleMaps3DDemo
-//
-//  Created by Ed Boiling on 24/02/2026.
-//
-
-
 // Copyright 2026 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
