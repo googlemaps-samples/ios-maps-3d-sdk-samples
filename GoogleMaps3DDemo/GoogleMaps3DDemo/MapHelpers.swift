@@ -26,11 +26,11 @@ extension Camera {
       range: 100)
   
   public static var sanFranciscoZoomedOut: Camera = .init(
-    center: .init(latitude: 37.7845812, longitude: -122.3660241, altitude: 1585),
+    center: .init(latitude: 37.7957734, longitude: -122.4000130, altitude: 1585),
     heading: 288.0,
     tilt: 35.0,
     roll: 0.0,
-    range: 40000)
+    range: 6000)
 
   public static var seattle: Camera = .init(
     center: .init(latitude: 47.6210296, longitude: -122.3496903),

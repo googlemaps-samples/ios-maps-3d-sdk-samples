@@ -25,7 +25,7 @@ struct MarkerStyleDemo: View {
 
   var body: some View {
     VStack {
-      Map(initialCamera: .sanFranciscoZoomedOut, mode: .hybrid) {
+      Map(initialCamera: .sanFranciscoZoomedOut, mode: .satellite) {
         ForEach(markers) { marker in
           marker.content
             .onTap {
@@ -41,7 +41,7 @@ struct MarkerStyleDemo: View {
             .init(
               content:
                 randomMarker(
-                  camera: .sanFranciscoZoomedOut, style: .pin(.red))))
+                  camera: .sanFranciscoZoomedOut, style: .default)))
         } label: {
           Image(systemName: "pin.fill")
             .foregroundColor(.red)
@@ -70,7 +70,7 @@ struct MarkerStyleDemo: View {
                         .minimumScaleFactor(0.01)
                     }))))
         } label: {
-          Image(systemName: "text.bubble")
+          Image(systemName: "mappin.square.fill")
         }
         Spacer()
         Button {
@@ -80,23 +80,25 @@ struct MarkerStyleDemo: View {
                 randomMarker(
                   camera: .sanFranciscoZoomedOut,
                   style: .viewSnapshot {
-                    Image(systemName: "plus")
+                    Image(systemName: "bus.fill")
                       .font(.system(size: 6))
                       .foregroundStyle(.orange)
                       .padding(2)
                       .border(Color.orange, width: 1)
                   })))
         } label: {
-          Image(systemName: "puzzlepiece.extension")
+          Image(systemName: "bus")
         }
         Spacer()
         Button {
           markers.append(
             .init(
               content:
-                randomMarker(camera: .sanFranciscoZoomedOut, style: .image(Image(systemName: "plus")))))
+                randomMarker(camera: .sanFranciscoZoomedOut, style: .image(
+                  Image(systemName: "mappin.circle.fill")
+                ))))
         } label: {
-          Image(systemName: "photo")
+          Image(systemName: "mappin.circle.fill")
         }
         Spacer()
         Button {
@@ -104,9 +106,19 @@ struct MarkerStyleDemo: View {
             .init(
               content:
                 randomMarker(
-                  camera: .sanFranciscoZoomedOut, style: .pin(.init(scale: 2.0)))))
+                  camera: .sanFranciscoZoomedOut, style: .viewSnapshot {
+                    VStack {
+                     Image(systemName: "star.fill")
+                     .foregroundStyle(.yellow)
+                     Text("Favorite")
+                        .font(.caption)
+                     }
+                     .padding(4)
+                     .background(.blue, in: .capsule)
+                   }
+                )))
         } label: {
-          Image(systemName: "pin.fill")
+          Image(systemName: "star.fill")
             .foregroundColor(.blue)
             .scaleEffect(1.5)
         }
@@ -126,10 +138,10 @@ struct MarkerStyleDemo: View {
 private func randomMarker(camera: Camera, style: Marker.Style) -> Marker {
   Marker(
     position: .init(
-      latitude: camera.center.latitude + Double.random(in: 0...0.1) - 0.05,
-      longitude: camera.center.longitude + Double.random(in: 0...0.1) - 0.05,
-      altitude: 0.0),
-    altitudeMode: .absolute,
+      latitude: camera.center.latitude + Double.random(in: 0...0.01) - 0.005,
+      longitude: camera.center.longitude + Double.random(in: 0...0.01) - 0.005,
+      altitude: 10.0),
+    altitudeMode: .relativeToMesh,
     collisionBehavior: .required,
     extruded: false,
     drawsWhenOccluded: true,

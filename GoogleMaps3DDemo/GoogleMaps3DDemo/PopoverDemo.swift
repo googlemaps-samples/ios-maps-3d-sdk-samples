@@ -21,7 +21,7 @@ public struct PopoverDemo: View {
   private let ferryBuildingMarker = Marker(position: .ferryBuilding)
   public var body: some View {
     ZStack(alignment: .bottom) {
-      Map(initialCamera: .sanFrancisco, mode: .hybrid) {
+      Map(initialCamera: .sanFrancisco, mode: .satellite) {
         Popover(
           positionAnchor: .alcatrazIsland,
           altitudeMode: .relativeToGround,
@@ -69,4 +69,8 @@ public struct PopoverDemo: View {
       .padding()
     }
   }
+}
+
+#Preview {
+  PopoverDemo()
 }
