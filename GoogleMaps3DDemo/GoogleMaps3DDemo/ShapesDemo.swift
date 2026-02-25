@@ -36,6 +36,12 @@ struct ShapesDemo: View {
           isShowingAlert = true
         }
       }
+      .alert(isPresented: $isShowingAlert) {
+        Alert(
+          title: Text(title),
+          dismissButton: .default(Text("OK"))
+        )
+      }
     }
   }
 }
