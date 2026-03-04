@@ -17,19 +17,36 @@ import GoogleMaps3D
 
 struct ShapesDemo: View {
   @State var camera: Camera = .downtownSanFrancisco
+  @State var isShowingAlert: Bool = false
+  @State var title: String = ""
 
   var body: some View {
     VStack {
       Map(camera: $camera, mode: .hybrid) {
-        polyline
-        originPolygon
-        destinationPolygon
+        polyline.onTap {
+            title = "Polyline tapped"
+            isShowingAlert = true
+        }
+        originPolygon.onTap {
+          title = "Origin polygon tapped"
+          isShowingAlert = true
+        }
+        destinationPolygon.onTap {
+          title = "Destination polygon tapped"
+          isShowingAlert = true
+        }
+      }
+      .alert(isPresented: $isShowingAlert) {
+        Alert(
+          title: Text(title),
+          dismissButton: .default(Text("OK"))
+        )
       }
     }
   }
 }
  
-var polyline: Polyline = .init(coordinates: [
+var polyline: Polyline = .init(path: [
     LatLngAltitude(latitude: 37.80515638571346, longitude: -122.4032569467164, altitude: 0),
     LatLngAltitude(latitude: 37.80337073509504, longitude: -122.4012878349353, altitude: 0),
     LatLngAltitude(latitude: 37.79925208843463, longitude: -122.3976697250461, altitude: 0),
@@ -48,10 +65,10 @@ var polyline: Polyline = .init(coordinates: [
     outerColor: .white,
     outerWidth: 0.2
     ))
-  .contour(GoogleMaps3D.Polyline.ContourStyle(isGeodesic: true))
+  .contour(GoogleMaps3D.Polyline.ContourStyle(geodesic: true))
 
 
-  var originPolygon: Polygon = .init(outerCoordinates: [
+  var originPolygon: Polygon = .init(path: [
     LatLngAltitude(latitude: 37.79165766856578, longitude:  -122.3983762901255, altitude: 300),
     LatLngAltitude(latitude: 37.7915324439261, longitude:  -122.3982171091383, altitude: 300),
     LatLngAltitude(latitude: 37.79166617650914, longitude:  -122.3980478493319, altitude: 300),
@@ -61,7 +78,7 @@ var polyline: Polyline = .init(coordinates: [
   altitudeMode: .relativeToGround)
   .style(GoogleMaps3D.Polygon.StyleOptions(fillColor:.green, extruded: true) )
 
-  var destinationPolygon: Polygon = .init(outerCoordinates: [
+  var destinationPolygon: Polygon = .init(path: [
       LatLngAltitude(latitude: 37.80515661739527, longitude:  -122.4034307490334, altitude: 300),
       LatLngAltitude(latitude: 37.80503794515428, longitude:  -122.4032633416024, altitude: 300),
       LatLngAltitude(latitude: 37.80517850164195, longitude:  -122.4031056058006, altitude: 300),

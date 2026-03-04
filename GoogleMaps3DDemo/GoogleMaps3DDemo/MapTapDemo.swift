@@ -15,25 +15,33 @@
 import GoogleMaps3D
 import SwiftUI
 
-struct PlaceTapDemo: View {
+struct MapTapDemo: View {
   @State var camera: Camera = .sanFrancisco
   @State var isPresented = false
-  @State var tapInfo: PlaceTapInfo?
+  @State var tapInfo: MapTapInfo?
+  @State var alertMessage: String = ""
 
   var body: some View {
     Map(camera: $camera, mode: .hybrid)
-      .onPlaceTap { tapInfo in
+      .onTap { tapInfo in
         self.tapInfo = tapInfo
-        isPresented.toggle()
+        isPresented = true
+        switch tapInfo.content {
+          case .map:
+            alertMessage = "Map tapped"
+          case .place(let placeId):
+            alertMessage = "Place tapped: \(placeId)"
+          default:
+            alertMessage = "Unknown tap"
+        }
       }
       .alert(
-        "Place tapped - \(tapInfo?.placeId ?? "nil")",
+        alertMessage,
         isPresented: $isPresented,
         actions: { Button("OK") {} }
       )
   }
 }
 #Preview {
-  PlaceTapDemo()
+  MapTapDemo()
 }
-

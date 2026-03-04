@@ -30,23 +30,29 @@ struct GoogleMaps3DDemoApp: App {
           NavigationLink(destination: CameraRestrictionDemo()) {
             Text("Camera Restrictions Demo")
           }
+          NavigationLink(destination: FlyAlongRouteDemo()) {
+            Text("Flight Path Demo")
+          }
+          NavigationLink(destination: MapTapDemo()) {
+            Text("Map Tap Demo")
+          }
           NavigationLink(destination: MarkerDemo()) {
             Text("Marker Demo")
+          }
+          NavigationLink(destination: MarkerCollisionDemo()) {
+            Text("Marker Collision Demo")
+          }
+          NavigationLink(destination: MarkerStyleDemo()) {
+            Text("Marker Style Demo")
           }
           NavigationLink(destination: ModelDemo()) {
             Text("Model Demo")
           }
+          NavigationLink(destination: PopoverDemo()) {
+            Text("Popover Demo")
+          }
           NavigationLink(destination: ShapesDemo()) {
             Text("Shapes Demo")
-          }
-          NavigationLink(destination: PlaceTapDemo()) {
-            Text("Place Tap Demo")
-          }
-          NavigationLink(destination: FlyAlongRouteDemo()) {
-            Text("Flight Path Demo")
-          }
-          NavigationLink(destination: MarkerCollisionDemo()) {
-            Text("Marker Collision Demo")
           }
         }
       }

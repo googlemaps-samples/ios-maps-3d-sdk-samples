@@ -33,8 +33,7 @@ struct CameraDemo: View {
           .seattle,
           duration: 15,
           rounds: 0.5,
-          trigger: flyAround,
-          callback: {  }
+          trigger: flyAround
         )
       Button("Start Flying") {
         animate.toggle()

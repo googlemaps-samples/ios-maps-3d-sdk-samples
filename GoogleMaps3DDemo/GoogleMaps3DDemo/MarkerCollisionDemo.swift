@@ -17,7 +17,7 @@ import GoogleMaps3D
 import SwiftUI
 
 struct MarkerCollisionDemo: View {
-  @State var sanFrancisco: Camera = .init(latitude: 37.79556672721526, longitude: -122.39345183225336, altitude: 50, heading: 226.0, tilt: 75.0, roll: 0.0, range: 500)
+  @State var sanFrancisco: Camera = .init(center: .init(latitude: 37.79556672721526, longitude: -122.39345183225336, altitude: 50), heading: 226.0, tilt: 75.0, roll: 0.0, range: 500)
 
 
   var body: some View {
