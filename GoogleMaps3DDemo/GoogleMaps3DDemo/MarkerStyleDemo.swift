@@ -16,7 +16,7 @@ import GoogleMaps3D
 import SwiftUI
 
 struct MarkerStyleDemo: View {
-  @State var markers: [MapEntity<Marker>] = [
+  @State var markers: [MapEntity<Marker3D>] = [
     .init(content: randomMarker(camera: .sanFranciscoZoomedOut, style: .pin(.red)))
   ]
 
@@ -135,8 +135,8 @@ struct MarkerStyleDemo: View {
 }
 
 @MainActor
-private func randomMarker(camera: Camera, style: Marker.Style) -> Marker {
-  Marker(
+private func randomMarker(camera: Camera, style: Marker3D.Style) -> Marker3D {
+  Marker3D(
     position: .init(
       latitude: camera.center.latitude + Double.random(in: 0...0.01) - 0.005,
       longitude: camera.center.longitude + Double.random(in: 0...0.01) - 0.005,

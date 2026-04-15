@@ -23,7 +23,7 @@ struct MarkerCollisionDemo: View {
   var body: some View {
     VStack {
       Map(camera: $sanFrancisco, mode: .hybrid) {
-        Marker(
+        Marker3D(
           position: .init(
             latitude: 37.794724,
             longitude:  -122.39442,
@@ -33,7 +33,7 @@ struct MarkerCollisionDemo: View {
           extruded: true,
           label: "Marker 1"
         )
-        Marker(
+        Marker3D(
           position: .init(
             latitude: 37.7943220,
             longitude: -122.395073,
@@ -44,7 +44,7 @@ struct MarkerCollisionDemo: View {
           label: "Marker 2"
         )
 
-        Marker(
+        Marker3D(
           position: .init(
             latitude: 37.7934108,
             longitude: -122.396144,
