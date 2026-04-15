@@ -51,6 +51,18 @@ extension Camera {
     tilt: 80.0,
     roll: 0.0,
     range: 200)
+
+  public static var newYork: Camera = .init(
+    center: .init(latitude: 40.69, longitude: -74.0)
+  )
+
+  public static var london: Camera = .init(
+    center: .init(latitude: 51.513853, longitude: -0.098589, altitude: 275),
+    heading: 87.76,
+    tilt: 74,
+    roll: 0,
+    range: 600
+  )
 }
 
 extension LatLngAltitude {
