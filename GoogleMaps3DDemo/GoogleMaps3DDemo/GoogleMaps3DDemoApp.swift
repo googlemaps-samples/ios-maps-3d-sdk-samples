@@ -51,6 +51,9 @@ struct GoogleMaps3DDemoApp: App {
           NavigationLink(destination: PopoverDemo()) {
             Text("Popover Demo")
           }
+          NavigationLink(destination: RoadmapModeDemo()) {
+            Text("Roadmap Mode Demo")
+          }
           NavigationLink(destination: ShapesDemo()) {
             Text("Shapes Demo")
           }
