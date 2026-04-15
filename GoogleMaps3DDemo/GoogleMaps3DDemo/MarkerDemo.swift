@@ -17,7 +17,7 @@ import GoogleMaps3D
 
 struct MarkerDemo: View {
   @State var camera: Camera = .sanFrancisco
-  @State var mapMarker: Marker = .init(
+  @State var mapMarker: Marker3D = .init(
     position: .init(
       latitude: 37.8044862,
       longitude: -122.4301493,
@@ -31,7 +31,7 @@ struct MarkerDemo: View {
     label: "Test"
   )
 
-  @State var extrudedMarker: Marker = .init(
+  @State var extrudedMarker: Marker3D = .init(
     position: .init(
       latitude: 37.78980534,
       longitude:  -122.3969349,

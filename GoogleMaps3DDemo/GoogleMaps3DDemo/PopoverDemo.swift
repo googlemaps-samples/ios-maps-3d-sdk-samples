@@ -18,7 +18,7 @@ import GoogleMaps3D
 public struct PopoverDemo: View {
   @State private var isCoordinateWindowOpen: Bool = false
   @State private var isFerryBuildingMarkerPopoverOpen: Bool = false
-  private let ferryBuildingMarker = Marker(position: .ferryBuilding)
+  private let ferryBuildingMarker = Marker3D(position: .ferryBuilding)
   public var body: some View {
     ZStack(alignment: .bottom) {
       Map(initialCamera: .sanFrancisco, mode: .satellite) {

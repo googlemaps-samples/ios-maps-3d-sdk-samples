@@ -32,7 +32,7 @@ struct CameraDemo: View {
         .flyCameraAround(
           .seattle,
           duration: 15,
-          rounds: 0.5,
+          repeatCount: 0.5,
           trigger: flyAround
         )
       Button("Start Flying") {
