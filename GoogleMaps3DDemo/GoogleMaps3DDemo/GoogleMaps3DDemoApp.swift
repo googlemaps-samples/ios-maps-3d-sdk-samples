@@ -30,6 +30,12 @@ struct GoogleMaps3DDemoApp: App {
           NavigationLink(destination: CameraRestrictionDemo()) {
             Text("Camera Restrictions Demo")
           }
+          NavigationLink(destination: CloudBasedMapStylingDemo()) {
+            Text("Cloud Based Map Styling Demo")
+          }
+          NavigationLink(destination: FieldOfViewDemo()) {
+            Text("Field of View Demo")
+          }
           NavigationLink(destination: FlyAlongRouteDemo()) {
             Text("Flight Path Demo")
           }
@@ -63,7 +69,7 @@ struct GoogleMaps3DDemoApp: App {
       .onAppear {
         /*
          API Key Setup:
-         1. Get an API key using teh instructions at: https://developers.google.com/maps/documentation/maps-3d/ios-sdk/setup#create-project
+         1. Get an API key using the instructions at: https://developers.google.com/maps/documentation/maps-3d/ios-sdk/setup#create-project
          2. Create a .xcconfig file at the project root level
          3. Add this line: MAPS_API_KEY = your_api_key_here
          4. Replace "your_api_key_here" with the API key obtained in step 3
