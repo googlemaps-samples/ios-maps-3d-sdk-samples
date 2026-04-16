@@ -53,7 +53,11 @@ extension Camera {
     range: 200)
 
   public static var newYork: Camera = .init(
-    center: .init(latitude: 40.69, longitude: -74.0)
+    center: .init(latitude: 40.701564738850095,  longitude: -74.0137093075384, altitude: 250),
+    heading: 356,
+    tilt: 64,
+    roll: 0,
+    range: 400
   )
 
   public static var london: Camera = .init(
