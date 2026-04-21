@@ -39,6 +39,9 @@ struct GoogleMaps3DDemoApp: App {
           NavigationLink(destination: FlyAlongRouteDemo()) {
             Text("Flight Path Demo")
           }
+          NavigationLink(destination: FloodFillDemo()) {
+            Text("Flood Fill Demo")
+          }
           NavigationLink(destination: MapTapDemo()) {
             Text("Map Tap Demo")
           }
@@ -59,6 +62,9 @@ struct GoogleMaps3DDemoApp: App {
           }
           NavigationLink(destination: RoadmapModeDemo()) {
             Text("Roadmap Mode Demo")
+          }
+          NavigationLink(destination: RoutesAPIDemo()) {
+            Text("Routes API Demo")
           }
           NavigationLink(destination: ShapesDemo()) {
             Text("Shapes Demo")
