@@ -17,9 +17,19 @@ import SwiftUI
 
 struct RoadmapModeDemo: View {
   @State private var camera: Camera = .london
+  @State private var mapMode: MapMode = .roadmap
 
   var body: some View {
-    Map(camera: $camera, mode: .roadmap)
+    VStack{
+      Map(camera: $camera, mode: mapMode)
+      Picker("Map Mode", selection: $mapMode) {
+        Text("Roadmap").tag(MapMode.roadmap)
+        Text("Hybrid").tag(MapMode.hybrid)
+        Text("Satellite").tag(MapMode.satellite)
+      }
+      .pickerStyle(.segmented)
+      .padding()
+    }
   }
 }
 
