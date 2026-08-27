@@ -14,6 +14,7 @@
 
 import SwiftUI
 import GoogleMaps3D
+import GooglePlacesSwift
 
 @main
 struct GoogleMaps3DDemoApp: App {
@@ -24,11 +25,17 @@ struct GoogleMaps3DDemoApp: App {
           NavigationLink(destination: ContentView()) {
             Text("Basic Map")
           }
+          NavigationLink(destination: CameraControlsDemo()) {
+            Text("Camera Controls Demo")
+          }
           NavigationLink(destination: CameraDemo()) {
             Text("Camera Demo")
           }
           NavigationLink(destination: CameraRestrictionDemo()) {
             Text("Camera Restrictions Demo")
+          }
+          NavigationLink(destination: CityNavigationDemo()) {
+            Text("City Navigation Demo")
           }
           NavigationLink(destination: CloudBasedMapStylingDemo()) {
             Text("Cloud Based Map Styling Demo")
@@ -45,17 +52,23 @@ struct GoogleMaps3DDemoApp: App {
           NavigationLink(destination: MapTapDemo()) {
             Text("Map Tap Demo")
           }
-          NavigationLink(destination: MarkerDemo()) {
-            Text("Marker Demo")
-          }
           NavigationLink(destination: MarkerCollisionDemo()) {
             Text("Marker Collision Demo")
+          }
+          NavigationLink(destination: MarkerDemo()) {
+            Text("Marker Demo")
           }
           NavigationLink(destination: MarkerStyleDemo()) {
             Text("Marker Style Demo")
           }
           NavigationLink(destination: ModelDemo()) {
             Text("Model Demo")
+          }
+          NavigationLink(destination: OutdoorActivityDemo()) {
+            Text("Outdoor Activity Demo")
+          }
+          NavigationLink(destination: PlacesUIKitDemo()) {
+            Text("Places UI Kit Demo")
           }
           NavigationLink(destination: PopoverDemo()) {
             Text("Popover Demo")
@@ -77,8 +90,10 @@ struct GoogleMaps3DDemoApp: App {
          API Key Setup:
          1. Get an API key using the instructions at: https://developers.google.com/maps/documentation/maps-3d/ios-sdk/setup#create-project
          2. Create a .xcconfig file at the project root level
-         3. Add this line: MAPS_API_KEY = your_api_key_here
-         4. Replace "your_api_key_here" with the API key obtained in step 3
+         3. Add these lines:
+            MAPS_API_KEY = your_api_key_here
+            PLACES_API_KEY = your_api_key_here
+         4. Replace "your_api_key_here" with your actual API key
 
          Note: Never commit your actual API key to source control
         */
@@ -89,6 +104,10 @@ struct GoogleMaps3DDemoApp: App {
           fatalError("MAPS_API_KEY not set in Info.plist")
         }
         Map.apiKey = apiKey
+
+        if let placesApiKey = infoDictionary["PLACES_API_KEY"] as? String, !placesApiKey.isEmpty {
+          _ = PlacesClient.provideAPIKey(placesApiKey)
+        }
       }
     }
   }

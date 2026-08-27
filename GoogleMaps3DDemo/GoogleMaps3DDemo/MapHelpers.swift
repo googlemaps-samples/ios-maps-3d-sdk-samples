@@ -81,6 +81,14 @@ extension Camera {
     fieldOfView: .degrees(100),
     altitudeMode: .relativeToGround
   )
+
+  public static var devilsTower: Camera = .init(
+    center: .init(latitude: 44.5902, longitude: -104.7153, altitude: 1558),
+    heading: 0.0,
+    tilt: 70.0,
+    roll: 0.0,
+    range: 3000
+  )
 }
 
 extension LatLngAltitude {

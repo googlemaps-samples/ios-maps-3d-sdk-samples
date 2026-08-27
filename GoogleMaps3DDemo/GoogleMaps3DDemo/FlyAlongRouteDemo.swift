@@ -12,48 +12,54 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 import GoogleMaps3D
 import SwiftUI
 
 struct FlyAlongRouteDemo: View {
   @State private var camera: Camera = .innsbruck
   @State private var flyToDuration: TimeInterval = 5
-  @State var animation: Bool = true
+  @State private var animation: Bool = false
 
-  @StateObject var flightData: FlightDataLoader = FlightDataLoader()
+  @StateObject private var flightData = FlightDataLoader()
+
+  private var initialCamera: Camera {
+    if let firstStep = flightData.flightPathData.flight.first {
+      return makeCamera(step: firstStep)
+    }
+    return .innsbruck
+  }
 
   var body: some View {
     VStack {
-      Map(camera: $camera, mode: .hybrid)
-        .keyframeAnimator(
-          initialValue: makeCamera(step: flightData.flightPathData.flight[0]),
-          trigger: animation,
-          content: { view, value in
+      if !flightData.flightPathData.flight.isEmpty {
+        Map(camera: $camera, mode: .hybrid)
+          .keyframeAnimator(
+            initialValue: initialCamera,
+            trigger: animation
+          ) { _, value in
             Map(camera: .constant(value), mode: .hybrid)
-          },
-          keyframes: { _ in
-            KeyframeTrack(content: {
-              for i in  1...flightData.flightPathData.flight.count-1 {
-                makeKeyFrame(step: flightData.flightPathData.flight[i])
+          } keyframes: { _ in
+            KeyframeTrack {
+              for step in flightData.flightPathData.flight.dropFirst() {
+                CubicKeyframe(
+                  makeCamera(step: step),
+                  duration: flyToDuration
+                )
               }
-            })
+            }
           }
-        )
-      Button("Fly Along Route"){
+      } else {
+        Map(camera: $camera, mode: .hybrid)
+      }
+
+      Button("Fly Along Route") {
         animation.toggle()
       }
+      .padding()
     }
   }
 
-  func makeKeyFrame(step: FlightPathLocation) -> CubicKeyframe<Camera> {
-    return CubicKeyframe(
-      makeCamera(step: step),
-      duration: flyToDuration
-    )
-  }
-
-  func makeCamera(step: FlightPathLocation) -> Camera {
+  private func makeCamera(step: FlightPathLocation) -> Camera {
     return .init(
       center: .init(latitude: step.latitude, longitude: step.longitude, altitude: step.altitude),
       heading: step.bearing,
