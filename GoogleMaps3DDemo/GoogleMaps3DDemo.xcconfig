@@ -1,0 +1,4 @@
+// Checked in. Do NOT put your API key here.
+// Create Secrets.xcconfig next to this file and add:
+//   MAPS_API_KEY = <your key>
+#include? "Secrets.xcconfig"

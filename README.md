@@ -20,7 +20,11 @@ At this first Experimental release stage, the iOS Simulator may not perform well
 3. Create an API key.
 4. Clone this repository.
 5. Open the project in Xcode. 
-6. Add your API key to the project. Use an .xcconfig file or edit Info.plist to specify a value for MAPS_API_KEY
+6. Add your API key to the project:
+   Create a `Secrets.xcconfig` file in the `GoogleMaps3DDemo` directory (next to `GoogleMaps3DDemo.xcconfig`). This file is git-ignored, so your key remains private:
+   ```
+   MAPS_API_KEY = your_api_key_here
+   ```
 7. Build and run the app.
 
 ## Usage

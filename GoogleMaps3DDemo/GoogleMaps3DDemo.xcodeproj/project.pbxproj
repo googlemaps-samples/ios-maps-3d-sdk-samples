@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9D4624802F4DE2C100C29907 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9D46247F2F4DE2C100C29907 /* Config.xcconfig */; };
 		9DAEBE1D2DDCCB12002CC998 /* GoogleMaps3D in Frameworks */ = {isa = PBXBuildFile; productRef = 9DAEBE1C2DDCCB12002CC998 /* GoogleMaps3D */; };
 		9DAEBE212DDCCB12002CC998 /* GoogleMaps3DKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9DAEBE202DDCCB12002CC998 /* GoogleMaps3DKit */; };
 /* End PBXBuildFile section */
@@ -26,7 +25,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		9D46247F2F4DE2C100C29907 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		9D46247F2F4DE2C100C29907 /* GoogleMaps3DDemo.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = GoogleMaps3DDemo.xcconfig; sourceTree = "<group>"; };
 		9DCE69FC2DBFD50900A76B23 /* GoogleMaps3DDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoogleMaps3DDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -67,7 +66,7 @@
 		9DCE69F32DBFD50900A76B23 = {
 			isa = PBXGroup;
 			children = (
-				9D46247F2F4DE2C100C29907 /* Config.xcconfig */,
+				9D46247F2F4DE2C100C29907 /* GoogleMaps3DDemo.xcconfig */,
 				9DCE69FE2DBFD50900A76B23 /* GoogleMaps3DDemo */,
 				9DCE69FD2DBFD50900A76B23 /* Products */,
 			);
@@ -151,7 +150,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9D4624802F4DE2C100C29907 /* Config.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -170,7 +168,7 @@
 /* Begin XCBuildConfiguration section */
 		9DCE6A082DBFD50B00A76B23 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9D46247F2F4DE2C100C29907 /* Config.xcconfig */;
+			baseConfigurationReference = 9D46247F2F4DE2C100C29907 /* GoogleMaps3DDemo.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -234,7 +232,7 @@
 		};
 		9DCE6A092DBFD50B00A76B23 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9D46247F2F4DE2C100C29907 /* Config.xcconfig */;
+			baseConfigurationReference = 9D46247F2F4DE2C100C29907 /* GoogleMaps3DDemo.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -291,7 +289,7 @@
 		};
 		9DCE6A0B2DBFD50B00A76B23 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9D46247F2F4DE2C100C29907 /* Config.xcconfig */;
+			baseConfigurationReference = 9D46247F2F4DE2C100C29907 /* GoogleMaps3DDemo.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -335,7 +333,7 @@
 		};
 		9DCE6A0C2DBFD50B00A76B23 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9D46247F2F4DE2C100C29907 /* Config.xcconfig */;
+			baseConfigurationReference = 9D46247F2F4DE2C100C29907 /* GoogleMaps3DDemo.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

@@ -17,10 +17,10 @@ DerivedData/
 xcuserdata/
 *.xcworkspace/
 
-## Other
-*.moved-aside
-*.xcuserstate
-*.xcconfig
+# API keys live ONLY in Secrets.xcconfig (never tracked).
+# The <AppName>.xcconfig wrapper files ARE tracked and contain only
+# `#include? "Secrets.xcconfig"` — do NOT re-add a blanket *.xcconfig rule.
+Secrets.xcconfig
 
 ## Obj-C/Swift specific
 *.hmap

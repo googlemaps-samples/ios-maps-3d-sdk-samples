@@ -4,7 +4,5 @@
 <dict>
 	<key>MAPS_API_KEY</key>
 	<string>$(MAPS_API_KEY)</string>
-	<key>PLACES_API_KEY</key>
-	<string>$(PLACES_API_KEY)</string>
 </dict>
 </plist>
