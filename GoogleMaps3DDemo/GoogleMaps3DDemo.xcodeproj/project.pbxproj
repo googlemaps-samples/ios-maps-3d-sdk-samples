@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		9D4624802F4DE2C100C29907 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9D46247F2F4DE2C100C29907 /* Config.xcconfig */; };
 		9DAEBE1D2DDCCB12002CC998 /* GoogleMaps3D in Frameworks */ = {isa = PBXBuildFile; productRef = 9DAEBE1C2DDCCB12002CC998 /* GoogleMaps3D */; };
+		9DAEBE212DDCCB12002CC998 /* GoogleMaps3DKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9DAEBE202DDCCB12002CC998 /* GoogleMaps3DKit */; };
 		9DCE6A992DD1E07300A76B23 /* GooglePlacesSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 9DCE6A9A2DD1E07300A76B23 /* GooglePlacesSwift */; };
 /* End PBXBuildFile section */
 
@@ -57,6 +58,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9DAEBE1D2DDCCB12002CC998 /* GoogleMaps3D in Frameworks */,
+				9DAEBE212DDCCB12002CC998 /* GoogleMaps3DKit in Frameworks */,
 				9DCE6A992DD1E07300A76B23 /* GooglePlacesSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -103,6 +105,7 @@
 			name = GoogleMaps3DDemo;
 			packageProductDependencies = (
 				9DAEBE1C2DDCCB12002CC998 /* GoogleMaps3D */,
+				9DAEBE202DDCCB12002CC998 /* GoogleMaps3DKit */,
 				9DCE6A9A2DD1E07300A76B23 /* GooglePlacesSwift */,
 			);
 			productName = GoogleMaps3D;
@@ -383,7 +386,7 @@
 			repositoryURL = "https://github.com/googlemaps/ios-maps-3d-sdk";
 			requirement = {
 				kind = exactVersion;
-				version = 0.2.1;
+				version = 1.0.0;
 			};
 		};
 		9DCE6A982DD1E07300A76B23 /* XCRemoteSwiftPackageReference "ios-places-sdk" */ = {
@@ -391,7 +394,7 @@
 			repositoryURL = "https://github.com/googlemaps/ios-places-sdk";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 10.10.0;
+				minimumVersion = 11.2.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -401,6 +404,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 9DAEBE1B2DDCCB12002CC998 /* XCRemoteSwiftPackageReference "ios-maps-3d-sdk" */;
 			productName = GoogleMaps3D;
+		};
+		9DAEBE202DDCCB12002CC998 /* GoogleMaps3DKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9DAEBE1B2DDCCB12002CC998 /* XCRemoteSwiftPackageReference "ios-maps-3d-sdk" */;
+			productName = GoogleMaps3DKit;
 		};
 		9DCE6A9A2DD1E07300A76B23 /* GooglePlacesSwift */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -14,14 +14,34 @@
 
 import SwiftUI
 import GoogleMaps3D
+import GoogleMaps3DKit
 import GooglePlacesSwift
 
 @main
 struct GoogleMaps3DDemoApp: App {
+  @State private var isAdvancedDemosExpanded: Bool = false
+
   var body: some Scene {
     WindowGroup {
       NavigationView {
         List {
+          DisclosureGroup(isExpanded: $isAdvancedDemosExpanded) {
+            NavigationLink(destination: CityNavigationDemo()) {
+              Text("City Navigation Demo")
+            }
+            NavigationLink(destination: FlyAlongRouteDemo()) {
+              Text("Flight Path Demo")
+            }
+            NavigationLink(destination: FlightSimulatorDemo()) {
+              Text("Flight Simulator Demo")
+            }
+            NavigationLink(destination: OutdoorActivityDemo()) {
+              Text("Outdoor Activity Demo")
+            }
+          } label: {
+            Text("Advanced demos")
+          }
+
           NavigationLink(destination: ContentView()) {
             Text("Basic Map")
           }
@@ -34,23 +54,17 @@ struct GoogleMaps3DDemoApp: App {
           NavigationLink(destination: CameraRestrictionDemo()) {
             Text("Camera Restrictions Demo")
           }
-          NavigationLink(destination: CityNavigationDemo()) {
-            Text("City Navigation Demo")
-          }
           NavigationLink(destination: CloudBasedMapStylingDemo()) {
             Text("Cloud Based Map Styling Demo")
           }
           NavigationLink(destination: FieldOfViewDemo()) {
             Text("Field of View Demo")
           }
-          NavigationLink(destination: FlyAlongRouteDemo()) {
-            Text("Flight Path Demo")
-          }
-          NavigationLink(destination: FlightSimulatorDemo()) {
-            Text("Flight Simulator Demo")
-          }
           NavigationLink(destination: FloodFillDemo()) {
             Text("Flood Fill Demo")
+          }
+          NavigationLink(destination: MapControlsDemo()) {
+            Text("Map Controls Demo")
           }
           NavigationLink(destination: MapTapDemo()) {
             Text("Map Tap Demo")
@@ -66,9 +80,6 @@ struct GoogleMaps3DDemoApp: App {
           }
           NavigationLink(destination: ModelDemo()) {
             Text("Model Demo")
-          }
-          NavigationLink(destination: OutdoorActivityDemo()) {
-            Text("Outdoor Activity Demo")
           }
           NavigationLink(destination: PlacesUIKitDemo()) {
             Text("Places UI Kit Demo")
@@ -86,6 +97,7 @@ struct GoogleMaps3DDemoApp: App {
             Text("Shapes Demo")
           }
         }
+        .navigationTitle("Maps 3D SDK Samples")
       }
 
       .onAppear {

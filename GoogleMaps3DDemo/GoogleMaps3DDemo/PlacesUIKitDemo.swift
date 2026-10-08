@@ -14,6 +14,7 @@
 
 import CoreLocation
 import GoogleMaps3D
+import GoogleMaps3DKit
 import GooglePlacesSwift
 import SwiftUI
 
@@ -104,6 +105,11 @@ struct PlacesUIKitDemo: View {
             label: selectedPlaceName
           )
         }
+      }
+      .placeInformationEnabled(true)
+      .onPlaceTap { placeId in
+        selectPlace(placeID: placeId)
+        return .default
       }
       .flyCameraTo(
         targetCamera,

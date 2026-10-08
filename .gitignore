@@ -35,3 +35,6 @@ Podfile.lock
 # Editor save state
 .vscode/
 
+# Local custom skills
+skills/
+
