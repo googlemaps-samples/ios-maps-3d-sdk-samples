@@ -15,7 +15,6 @@
 import SwiftUI
 import GoogleMaps3D
 import GoogleMaps3DKit
-import GooglePlacesSwift
 
 @main
 struct GoogleMaps3DDemoApp: App {
@@ -104,11 +103,11 @@ struct GoogleMaps3DDemoApp: App {
         /*
          API Key Setup:
          1. Get an API key using the instructions at: https://developers.google.com/maps/documentation/maps-3d/ios-sdk/setup#create-project
-         2. Create a .xcconfig file at the project root level
-         3. Add these lines:
+         2. Enable Map Tiles API and Places API (New) in Google Cloud Console
+         3. Create a .xcconfig file at the project root level
+         4. Add:
             MAPS_API_KEY = your_api_key_here
-            PLACES_API_KEY = your_api_key_here
-         4. Replace "your_api_key_here" with your actual API key
+         5. Replace "your_api_key_here" with your actual API key
 
          Note: Never commit your actual API key to source control
         */
@@ -119,10 +118,6 @@ struct GoogleMaps3DDemoApp: App {
           fatalError("MAPS_API_KEY not set in Info.plist")
         }
         Map.apiKey = apiKey
-
-        if let placesApiKey = infoDictionary["PLACES_API_KEY"] as? String, !placesApiKey.isEmpty {
-          _ = PlacesClient.provideAPIKey(placesApiKey)
-        }
       }
     }
   }
