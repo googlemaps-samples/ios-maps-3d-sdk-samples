@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import GoogleMaps3D
+import GoogleMaps3DKit
 import SwiftUI
 
 struct MapTapDemo: View {
@@ -20,28 +21,46 @@ struct MapTapDemo: View {
   @State var isPresented = false
   @State var tapInfo: MapTapInfo?
   @State var alertMessage: String = ""
+  @State var placeInfoEnabled: Bool = true
 
   var body: some View {
-    Map(camera: $camera, mode: .hybrid)
-      .onTap { tapInfo in
-        self.tapInfo = tapInfo
-        isPresented = true
-        switch tapInfo.content {
-          case .map:
-            alertMessage = "Map tapped"
-          case .place(let placeId):
-            alertMessage = "Place tapped: \(placeId)"
-          default:
-            alertMessage = "Unknown tap"
+    VStack(spacing: 0) {
+      Map(camera: $camera, mode: .hybrid)
+        .placeInformationEnabled(placeInfoEnabled)
+        .onPlaceTap { placeId in
+          alertMessage = "GoogleMaps3DKit onPlaceTap: \(placeId)"
+          isPresented = true
+          return .default
         }
+        .onTap { tapInfo in
+          self.tapInfo = tapInfo
+          isPresented = true
+          switch tapInfo.content {
+            case .map:
+              alertMessage = "Map tapped at \(String(format: "%.4f, %.4f", tapInfo.location.latitude, tapInfo.location.longitude))"
+            case .place(let placeId):
+              alertMessage = "Place tapped: \(placeId)"
+            default:
+              alertMessage = "Unknown tap"
+          }
+        }
+        .alert(
+          alertMessage,
+          isPresented: $isPresented,
+          actions: { Button("OK") {} }
+        )
+
+      HStack {
+        Toggle("Place Information Enabled", isOn: $placeInfoEnabled)
       }
-      .alert(
-        alertMessage,
-        isPresented: $isPresented,
-        actions: { Button("OK") {} }
-      )
+      .padding()
+      .background(.ultraThinMaterial)
+    }
+    .navigationTitle("Map Tap Demo")
+    .navigationBarTitleDisplayMode(.inline)
   }
 }
+
 #Preview {
   MapTapDemo()
 }

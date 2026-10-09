@@ -7,9 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9D4624802F4DE2C100C29907 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9D46247F2F4DE2C100C29907 /* Config.xcconfig */; };
 		9DAEBE1D2DDCCB12002CC998 /* GoogleMaps3D in Frameworks */ = {isa = PBXBuildFile; productRef = 9DAEBE1C2DDCCB12002CC998 /* GoogleMaps3D */; };
-		9DCE6A992DD1E07300A76B23 /* GooglePlacesSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 9DCE6A9A2DD1E07300A76B23 /* GooglePlacesSwift */; };
+		9DAEBE212DDCCB12002CC998 /* GoogleMaps3DKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9DAEBE202DDCCB12002CC998 /* GoogleMaps3DKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,7 +25,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		9D46247F2F4DE2C100C29907 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		9D46247F2F4DE2C100C29907 /* GoogleMaps3DDemo.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = GoogleMaps3DDemo.xcconfig; sourceTree = "<group>"; };
 		9DCE69FC2DBFD50900A76B23 /* GoogleMaps3DDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoogleMaps3DDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -57,7 +56,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9DAEBE1D2DDCCB12002CC998 /* GoogleMaps3D in Frameworks */,
-				9DCE6A992DD1E07300A76B23 /* GooglePlacesSwift in Frameworks */,
+				9DAEBE212DDCCB12002CC998 /* GoogleMaps3DKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,7 +66,7 @@
 		9DCE69F32DBFD50900A76B23 = {
 			isa = PBXGroup;
 			children = (
-				9D46247F2F4DE2C100C29907 /* Config.xcconfig */,
+				9D46247F2F4DE2C100C29907 /* GoogleMaps3DDemo.xcconfig */,
 				9DCE69FE2DBFD50900A76B23 /* GoogleMaps3DDemo */,
 				9DCE69FD2DBFD50900A76B23 /* Products */,
 			);
@@ -103,7 +102,7 @@
 			name = GoogleMaps3DDemo;
 			packageProductDependencies = (
 				9DAEBE1C2DDCCB12002CC998 /* GoogleMaps3D */,
-				9DCE6A9A2DD1E07300A76B23 /* GooglePlacesSwift */,
+				9DAEBE202DDCCB12002CC998 /* GoogleMaps3DKit */,
 			);
 			productName = GoogleMaps3D;
 			productReference = 9DCE69FC2DBFD50900A76B23 /* GoogleMaps3DDemo.app */;
@@ -135,7 +134,6 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				9DAEBE1B2DDCCB12002CC998 /* XCRemoteSwiftPackageReference "ios-maps-3d-sdk" */,
-				9DCE6A982DD1E07300A76B23 /* XCRemoteSwiftPackageReference "ios-places-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9DCE69FD2DBFD50900A76B23 /* Products */;
@@ -152,7 +150,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9D4624802F4DE2C100C29907 /* Config.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -171,7 +168,7 @@
 /* Begin XCBuildConfiguration section */
 		9DCE6A082DBFD50B00A76B23 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9D46247F2F4DE2C100C29907 /* Config.xcconfig */;
+			baseConfigurationReference = 9D46247F2F4DE2C100C29907 /* GoogleMaps3DDemo.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -235,7 +232,7 @@
 		};
 		9DCE6A092DBFD50B00A76B23 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9D46247F2F4DE2C100C29907 /* Config.xcconfig */;
+			baseConfigurationReference = 9D46247F2F4DE2C100C29907 /* GoogleMaps3DDemo.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -292,7 +289,7 @@
 		};
 		9DCE6A0B2DBFD50B00A76B23 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9D46247F2F4DE2C100C29907 /* Config.xcconfig */;
+			baseConfigurationReference = 9D46247F2F4DE2C100C29907 /* GoogleMaps3DDemo.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -314,6 +311,17 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Wl,-U,_$s7SwiftUI14_TaskModifier2V4name18executorPreference8priority6actionACSS_Sch_pSgScPyyYaYAcntcfC",
+					"-Wl,-U,_$s7SwiftUI14_TaskModifier2VMa",
+					"-Wl,-U,_$s7SwiftUI14_TaskModifier2VMn",
+					"-Wl,-U,_$s7SwiftUI14_TaskModifier2VAA12ViewModifierAAMc",
+					"-Wl,-U,_$s7SwiftUI19_TaskValueModifier2V2id4name18executorPreference8priority6actionACyxGx_SSSch_pSgScPyyYaYAcntcfC",
+					"-Wl,-U,_$s7SwiftUI19_TaskValueModifier2VMa",
+					"-Wl,-U,_$s7SwiftUI19_TaskValueModifier2VMn",
+					"-Wl,-U,_$s7SwiftUI19_TaskValueModifier2VyxGAA12ViewModifierAAMc",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.GoogleMaps3DDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -325,7 +333,7 @@
 		};
 		9DCE6A0C2DBFD50B00A76B23 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9D46247F2F4DE2C100C29907 /* Config.xcconfig */;
+			baseConfigurationReference = 9D46247F2F4DE2C100C29907 /* GoogleMaps3DDemo.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -346,6 +354,17 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Wl,-U,_$s7SwiftUI14_TaskModifier2V4name18executorPreference8priority6actionACSS_Sch_pSgScPyyYaYAcntcfC",
+					"-Wl,-U,_$s7SwiftUI14_TaskModifier2VMa",
+					"-Wl,-U,_$s7SwiftUI14_TaskModifier2VMn",
+					"-Wl,-U,_$s7SwiftUI14_TaskModifier2VAA12ViewModifierAAMc",
+					"-Wl,-U,_$s7SwiftUI19_TaskValueModifier2V2id4name18executorPreference8priority6actionACyxGx_SSSch_pSgScPyyYaYAcntcfC",
+					"-Wl,-U,_$s7SwiftUI19_TaskValueModifier2VMa",
+					"-Wl,-U,_$s7SwiftUI19_TaskValueModifier2VMn",
+					"-Wl,-U,_$s7SwiftUI19_TaskValueModifier2VyxGAA12ViewModifierAAMc",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.GoogleMaps3DDemo.GoogleMaps3DDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -383,15 +402,7 @@
 			repositoryURL = "https://github.com/googlemaps/ios-maps-3d-sdk";
 			requirement = {
 				kind = exactVersion;
-				version = 0.2.1;
-			};
-		};
-		9DCE6A982DD1E07300A76B23 /* XCRemoteSwiftPackageReference "ios-places-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/googlemaps/ios-places-sdk";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 10.10.0;
+				version = 1.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -402,10 +413,10 @@
 			package = 9DAEBE1B2DDCCB12002CC998 /* XCRemoteSwiftPackageReference "ios-maps-3d-sdk" */;
 			productName = GoogleMaps3D;
 		};
-		9DCE6A9A2DD1E07300A76B23 /* GooglePlacesSwift */ = {
+		9DAEBE202DDCCB12002CC998 /* GoogleMaps3DKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 9DCE6A982DD1E07300A76B23 /* XCRemoteSwiftPackageReference "ios-places-sdk" */;
-			productName = GooglePlacesSwift;
+			package = 9DAEBE1B2DDCCB12002CC998 /* XCRemoteSwiftPackageReference "ios-maps-3d-sdk" */;
+			productName = GoogleMaps3DKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

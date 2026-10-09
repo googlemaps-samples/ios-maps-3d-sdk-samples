@@ -12,11 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import CoreLocation
 import GoogleMaps3D
-import GooglePlacesSwift
+import GoogleMaps3DKit
 import SwiftUI
 
+/// Demonstrates the embedded Places UI Kit capability provided by `GoogleMaps3DKit`.
+///
+/// In Maps 3D SDK v1.0.0, enabling `.placeInformationEnabled(true)` connects 3D map
+/// POI interactions directly to the built-in Places UI Kit sheet without requiring
+/// manual Places API queries or separate Places view components.
 struct PlacesUIKitDemo: View {
   @State private var camera: Camera = .init(
     center: .init(latitude: 37.7955, longitude: -122.3937, altitude: 80),
@@ -34,28 +38,24 @@ struct PlacesUIKitDemo: View {
   )
   @State private var flyTrigger: Bool = false
 
-  @State private var isCompact: Bool = true
-  @State private var selectedPlaceID: String = "ChIJWTGPjmaAhYARxz6l1hOj92w" // Ferry Building SF
-  @State private var query: PlaceDetailsQuery = PlaceDetailsQuery(
-    identifier: .placeID("ChIJWTGPjmaAhYARxz6l1hOj92w")
-  )
-  @State private var selectedLocation: LatLngAltitude? = .init(
-    latitude: 37.7955,
-    longitude: -122.3937,
-    altitude: 0
-  )
-  @State private var selectedPlaceName: String = "Ferry Building"
+  @State private var placeInformationEnabled: Bool = true
+  @State private var tapActionOption: TapActionOption = .defaultCard
+  @State private var lastTappedPlaceID: String? = nil
+  @State private var selectedLandmarkID: String = "ChIJWTGPjmaAhYARxz6l1hOj92w"
 
-  // Places UI Kit Configurations
-  private let compactConfig = PlaceDetailsCompactConfiguration(
-    content: [.address(), .rating(), .type()],
-    theme: PlacesMaterialTheme()
-  )
+  enum TapActionOption: String, CaseIterable, Identifiable {
+    case defaultCard = "Show Built-in Card"
+    case none = "Suppress Card"
 
-  private let fullConfig = PlaceDetailsConfiguration(
-    content: [.address(), .rating(), .reviews(), .summary(), .media(), .type()],
-    theme: PlacesMaterialTheme()
-  )
+    var id: String { rawValue }
+
+    var action: PlaceTapAction {
+      switch self {
+      case .defaultCard: return .default
+      case .none: return .none
+      }
+    }
+  }
 
   // Landmark Presets
   private struct LandmarkItem: Identifiable {
@@ -79,14 +79,18 @@ struct PlacesUIKitDemo: View {
       id: "ChIJgUYUENWGhYAR9awaWIrbYOk",
       name: "Palace of Fine Arts",
       coordinate: .init(latitude: 37.8029, longitude: -122.4484, altitude: 0)
+    ),
+    LandmarkItem(
+      id: "ChIJ-2374-CAhYARg1V85E1b-b4",
+      name: "Salesforce Tower",
+      coordinate: .init(latitude: 37.7897, longitude: -122.3972, altitude: 0)
     )
   ]
 
   var body: some View {
     VStack(spacing: 0) {
-      // 3D Map View
+      // 3D Map View with embedded GoogleMaps3DKit Places capability
       Map(camera: $camera, mode: .hybrid) {
-        // Preset landmark pins
         ForEach(landmarks) { landmark in
           Marker3D(
             position: landmark.coordinate,
@@ -94,116 +98,102 @@ struct PlacesUIKitDemo: View {
             label: landmark.name
           )
         }
-
-        // Active selected marker pin
-        if let location = selectedLocation {
-          Marker3D(
-            position: location,
-            altitudeMode: .relativeToMesh,
-            extruded: true,
-            label: selectedPlaceName
-          )
-        }
+      }
+      .placeInformationEnabled(placeInformationEnabled)
+      .onPlaceTap { placeId in
+        lastTappedPlaceID = placeId
+        return tapActionOption.action
       }
       .flyCameraTo(
         targetCamera,
-        duration: 3,
+        duration: 2.5,
         trigger: flyTrigger
       )
-      .onTap { tapInfo in
-        switch tapInfo.content {
-        case .place(let placeId):
-          selectPlace(placeID: placeId)
-        default:
-          break
-        }
-      }
 
-      // Places UI Kit Control & Display Sheet
-      if isPlacesApiKeyConfigured {
-        VStack(spacing: 8) {
-          // Landmark Quick-Selection Chips
-          ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-              ForEach(landmarks) { landmark in
-                Button(landmark.name) {
-                  selectLandmark(landmark)
-                }
-                .buttonStyle(.bordered)
-                .tint(selectedPlaceID == landmark.id ? .blue : .secondary)
+      // Controls & Information Panel
+      VStack(spacing: 10) {
+        // Preset landmark quick navigation
+        ScrollView(.horizontal, showsIndicators: false) {
+          HStack(spacing: 8) {
+            ForEach(landmarks) { landmark in
+              Button(landmark.name) {
+                selectLandmark(landmark)
               }
+              .buttonStyle(.bordered)
+              .tint(selectedLandmarkID == landmark.id ? .blue : .secondary)
             }
-            .padding(.horizontal)
           }
+          .padding(.horizontal)
+        }
 
-          // Configuration Switcher (Compact vs Full)
-          Picker("View Style", selection: $isCompact) {
-            Text("Compact View").tag(true)
-            Text("Full Details").tag(false)
+        Divider()
+
+        // Place Information toggles
+        HStack {
+          Toggle("Place Info Enabled", isOn: $placeInformationEnabled)
+            .font(.subheadline)
+        }
+        .padding(.horizontal)
+
+        // Action configuration
+        HStack {
+          Text("On Place Tap:")
+            .font(.subheadline.bold())
+          Picker("On Place Tap", selection: $tapActionOption) {
+            ForEach(TapActionOption.allCases) { option in
+              Text(option.rawValue).tag(option)
+            }
           }
           .pickerStyle(.segmented)
-          .padding(.horizontal)
+        }
+        .padding(.horizontal)
 
-          // Places UI Kit Details Component
-          if isCompact {
-            PlaceDetailsCompactView(
-              orientation: .horizontal,
-              query: $query,
-              configuration: compactConfig,
-              placeDetailsCallback: handlePlaceDetailsResult
-            )
-            .frame(height: 100)
-            .padding(.horizontal)
+        // Live status & explanation
+        VStack(alignment: .leading, spacing: 4) {
+          if let placeId = lastTappedPlaceID {
+            HStack {
+              Image(systemName: "mappin.and.ellipse")
+                .foregroundColor(.blue)
+              Text("Tapped Place ID:")
+                .font(.caption.bold())
+              Text(placeId)
+                .font(.caption.monospaced())
+                .lineLimit(1)
+                .truncationMode(.middle)
+            }
           } else {
-            PlaceDetailsView(
-              orientation: .vertical,
-              query: $query,
-              configuration: fullConfig,
-              placeDetailsCallback: handlePlaceDetailsResult
-            )
-            .frame(maxHeight: 320)
-            .padding(.horizontal)
+            HStack {
+              Image(systemName: "hand.tap")
+                .foregroundColor(.secondary)
+              Text("Tap any 3D building or POI on the map to trigger place details.")
+                .font(.caption)
+                .foregroundColor(.secondary)
+            }
           }
-        }
-        .padding(.vertical, 8)
-        .background(.ultraThinMaterial)
-      } else {
-        VStack(spacing: 10) {
-          HStack(spacing: 8) {
-            Image(systemName: "exclamationmark.triangle.fill")
-              .foregroundColor(.orange)
-            Text("Places API Key Required")
-              .font(.subheadline.bold())
-          }
-          Text("To enable Places UI Kit components, add PLACES_API_KEY = your_key to Config.xcconfig")
-            .font(.caption)
+
+          Text("GoogleMaps3DKit embeds the Places UI Kit details sheet directly. Returning .default displays the sheet; returning .none suppresses it.")
+            .font(.caption2)
             .foregroundColor(.secondary)
-            .multilineTextAlignment(.center)
-            .padding(.horizontal)
         }
-        .padding()
-        .frame(maxWidth: .infinity)
-        .background(.ultraThinMaterial)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(8)
+        .background(Color.primary.opacity(0.05))
+        .cornerRadius(8)
+        .padding(.horizontal)
       }
+      .padding(.vertical, 10)
+      .background(.ultraThinMaterial)
     }
     .navigationTitle("Places UI Kit")
+    .navigationBarTitleDisplayMode(.inline)
     .onAppear {
       selectLandmark(landmarks[0])
     }
   }
 
-  private var isPlacesApiKeyConfigured: Bool {
-    guard let key = Bundle.main.infoDictionary?["PLACES_API_KEY"] as? String else {
-      return false
-    }
-    return !key.isEmpty && key != "your_api_key_here" && !key.hasPrefix("$(")
-  }
-
   private func selectLandmark(_ landmark: LandmarkItem) {
-    selectedPlaceID = landmark.id
-    selectedPlaceName = landmark.name
-    selectedLocation = landmark.coordinate
-    query = PlaceDetailsQuery(identifier: .placeID(landmark.id))
+    selectedLandmarkID = landmark.id
+    lastTappedPlaceID = landmark.id
     targetCamera = Camera(
       center: .init(
         latitude: landmark.coordinate.latitude,
@@ -211,44 +201,6 @@ struct PlacesUIKitDemo: View {
         altitude: 80
       ),
       heading: 270,
-      tilt: 60,
-      roll: 0,
-      range: 400
-    )
-    flyTrigger.toggle()
-  }
-
-  private func selectPlace(placeID: String) {
-    selectedPlaceID = placeID
-    query = PlaceDetailsQuery(identifier: .placeID(placeID))
-  }
-
-  private func handlePlaceDetailsResult(_ result: PlaceDetailsResult) {
-    guard let place = result.place else {
-      if let error = result.error {
-        print("Place Details Error: \(error.localizedDescription)")
-      }
-      return
-    }
-
-    print("Place Details Result: \(String(describing: place))")
-
-    // Update location and camera from Place location if available
-    let location = place.location
-    let newLocation = LatLngAltitude(
-      latitude: location.latitude,
-      longitude: location.longitude,
-      altitude: 0
-    )
-    selectedLocation = newLocation
-
-    targetCamera = Camera(
-      center: .init(
-        latitude: location.latitude,
-        longitude: location.longitude,
-        altitude: 80
-      ),
-      heading: camera.heading,
       tilt: 60,
       roll: 0,
       range: 400
