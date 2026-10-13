@@ -9,9 +9,9 @@ adding markers, shapes and models, handling click events on Place markers, and a
 
 ## Requirements
 
-* XCode 15 or later.
-* A physical iOS device for running the app if possible. 
-At this first Experimental release stage, the iOS Simulator may not perform well, but can be used.
+* Xcode 16 or later.
+* A physical iOS device is recommended for the best performance and visual fidelity.
+* **Running in the iOS Simulator**: The iOS Simulator is supported, but requires **Metal API Validation** to be disabled in Xcode. A shared scheme with Metal API Validation disabled is included with the project.
 
 ## Setup
 
@@ -26,6 +26,7 @@ At this first Experimental release stage, the iOS Simulator may not perform well
    MAPS_API_KEY = your_api_key_here
    ```
 7. Build and run the app.
+   > **Note on iOS Simulator**: If you create a custom scheme or run without the shared scheme, ensure **Metal: API Validation** is set to **Disabled** under `Product` > `Scheme` > `Edit Scheme...` > `Run` > `Diagnostics`.
 
 ## Usage
 
