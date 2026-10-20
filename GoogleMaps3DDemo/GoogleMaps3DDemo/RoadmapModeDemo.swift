@@ -16,12 +16,12 @@ import GoogleMaps3D
 import SwiftUI
 
 struct RoadmapModeDemo: View {
-  @State private var camera: Camera = .london
   @State private var mapMode: MapMode = .roadmap
 
   var body: some View {
-    VStack{
-      Map(camera: $camera, mode: mapMode)
+    VStack {
+      Map(initialCamera: .london, mode: mapMode)
+
       Picker("Map Mode", selection: $mapMode) {
         Text("Roadmap").tag(MapMode.roadmap)
         Text("Hybrid").tag(MapMode.hybrid)
@@ -30,6 +30,11 @@ struct RoadmapModeDemo: View {
       .pickerStyle(.segmented)
       .padding()
     }
+    .navigationTitle("Map Modes")
+    .navigationBarTitleDisplayMode(.inline)
   }
 }
 
+#Preview {
+  RoadmapModeDemo()
+}

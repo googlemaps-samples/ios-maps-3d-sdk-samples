@@ -21,24 +21,37 @@ import GoogleMaps3D
 public struct PathMetadata {
   public let points: [LatLngAltitude]
   public let distances: [Double]
+  public let segmentBearings: [Double]
   public let totalLength: Double
 
-  /// Initializes path metadata by pre-computing cumulative geodesic distances across all waypoints.
+  /// Initializes path metadata by pre-computing cumulative geodesic distances and segment bearings.
+  ///
+  /// If two consecutive waypoints are identical (`segmentLength < 1e-6`), the previous segment's
+  /// bearing is preserved to prevent heading snaps to 0° (North).
   public init(path: [LatLngAltitude]) {
     self.points = path
     var dists: [Double] = [0.0]
+    var bearings: [Double] = []
     var total: Double = 0.0
+    var lastValidBearing: Double = 0.0
 
     if path.count > 1 {
       for i in 0..<(path.count - 1) {
         let p1 = CLLocation(latitude: path[i].latitude, longitude: path[i].longitude)
         let p2 = CLLocation(latitude: path[i + 1].latitude, longitude: path[i + 1].longitude)
-        total += p1.distance(from: p2)
+        let segDist = p1.distance(from: p2)
+        total += segDist
         dists.append(total)
+
+        if segDist >= 1e-6 {
+          lastValidBearing = Self.calculateBearing(from: path[i], to: path[i + 1])
+        }
+        bearings.append(lastValidBearing)
       }
     }
 
     self.distances = dists
+    self.segmentBearings = bearings
     self.totalLength = max(total, 1.0)
   }
 
@@ -56,7 +69,7 @@ public struct PathMetadata {
 
       if clampedDist >= dStart && clampedDist <= dEnd {
         let segmentDist = dEnd - dStart
-        let t = segmentDist > 0 ? (clampedDist - dStart) / segmentDist : 0.0
+        let t = segmentDist > 1e-6 ? (clampedDist - dStart) / segmentDist : 0.0
         let p1 = points[i]
         let p2 = points[i + 1]
 
@@ -68,29 +81,66 @@ public struct PathMetadata {
       }
     }
 
-    let last = points.last!
-    return LatLngAltitude(latitude: last.latitude, longitude: last.longitude, altitude: last.altitude + altitudeOffset)
+    let last = points[points.count - 1]
+    return LatLngAltitude(
+      latitude: last.latitude,
+      longitude: last.longitude,
+      altitude: last.altitude + altitudeOffset
+    )
+  }
+
+  /// Returns the pre-computed segment bearing at a given distance along the path.
+  public func segmentBearing(at distance: Double) -> Double {
+    guard !segmentBearings.isEmpty else { return 0.0 }
+    let clampedDist = max(0, min(distance, totalLength))
+
+    for i in 0..<(distances.count - 1) {
+      if clampedDist >= distances[i] && clampedDist <= distances[i + 1] {
+        return segmentBearings[i]
+      }
+    }
+    return segmentBearings[segmentBearings.count - 1]
   }
 
   /// Calculates the great-circle initial forward azimuth (bearing) from one coordinate to another.
-  public static func calculateBearing(from: LatLngAltitude, to: LatLngAltitude) -> Double {
-    let lat1 = from.latitude * .pi / 180
-    let lon1 = from.longitude * .pi / 180
-    let lat2 = to.latitude * .pi / 180
-    let lon2 = to.longitude * .pi / 180
+  public static func calculateBearing(
+    from: LatLngAltitude,
+    to: LatLngAltitude,
+    fallbackBearing: Double = 0.0
+  ) -> Double {
+    let dist = FlightMath.greatCircleDistanceMeters(
+      lat1: from.latitude,
+      lon1: from.longitude,
+      lat2: to.latitude,
+      lon2: to.longitude
+    )
+    guard dist >= 1e-6 else {
+      return fallbackBearing
+    }
 
-    let dLon = lon2 - lon1
-    let y = sin(dLon) * cos(lat2)
-    let x = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dLon)
-    let radians = atan2(y, x)
-    return (radians * 180 / .pi + 360).truncatingRemainder(dividingBy: 360)
+    return FlightMath.greatCircleBearingDegrees(
+      lat1: from.latitude,
+      lon1: from.longitude,
+      lat2: to.latitude,
+      lon2: to.longitude
+    )
   }
 
   /// Computes the forward heading azimuth to a target point located `lookAheadDistance` meters ahead.
-  /// This provides smooth corner anticipation and eliminates abrupt frame-by-frame camera snapping.
+  ///
+  /// Preserves the active segment's bearing if the look-ahead span has zero length (e.g., on duplicate
+  /// points or at the end of the path).
   public func lookAheadHeading(at currentDistance: Double, lookAheadDistance: Double) -> Double {
-    let currentPos = position(at: currentDistance)
-    let targetPos = position(at: currentDistance + lookAheadDistance)
-    return PathMetadata.calculateBearing(from: currentPos, to: targetPos)
+    let clampedCurrent = max(0, min(currentDistance, totalLength))
+    let clampedTarget = max(0, min(clampedCurrent + lookAheadDistance, totalLength))
+    let fallback = segmentBearing(at: clampedCurrent)
+
+    guard clampedTarget - clampedCurrent >= 1e-6 else {
+      return fallback
+    }
+
+    let currentPos = position(at: clampedCurrent)
+    let targetPos = position(at: clampedTarget)
+    return Self.calculateBearing(from: currentPos, to: targetPos, fallbackBearing: fallback)
   }
 }

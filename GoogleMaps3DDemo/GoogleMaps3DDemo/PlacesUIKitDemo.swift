@@ -36,7 +36,8 @@ struct PlacesUIKitDemo: View {
     roll: 0,
     range: 400
   )
-  @State private var flyTrigger: Bool = false
+  @State private var flyTrigger: Int = 0
+  @State private var isFlying: Bool = false
 
   @State private var placeInformationEnabled: Bool = true
   @State private var tapActionOption: TapActionOption = .defaultCard
@@ -57,9 +58,9 @@ struct PlacesUIKitDemo: View {
     }
   }
 
-  // Landmark Presets
+  // Landmark Presets for camera navigation
   private struct LandmarkItem: Identifiable {
-    let id: String // Place ID
+    let id: String
     let name: String
     let coordinate: LatLngAltitude
   }
@@ -90,25 +91,20 @@ struct PlacesUIKitDemo: View {
   var body: some View {
     VStack(spacing: 0) {
       // 3D Map View with embedded GoogleMaps3DKit Places capability
-      Map(camera: $camera, mode: .hybrid) {
-        ForEach(landmarks) { landmark in
-          Marker3D(
-            position: landmark.coordinate,
-            altitudeMode: .relativeToMesh,
-            label: landmark.name
-          )
+      Map(camera: $camera, mode: .hybrid)
+        .placeInformationEnabled(placeInformationEnabled)
+        .onPlaceTap { placeId in
+          lastTappedPlaceID = placeId
+          return tapActionOption.action
         }
-      }
-      .placeInformationEnabled(placeInformationEnabled)
-      .onPlaceTap { placeId in
-        lastTappedPlaceID = placeId
-        return tapActionOption.action
-      }
-      .flyCameraTo(
-        targetCamera,
-        duration: 2.5,
-        trigger: flyTrigger
-      )
+        .flyCameraTo(
+          targetCamera,
+          duration: 2.5,
+          trigger: flyTrigger,
+          completion: {
+            isFlying = false
+          }
+        )
 
       // Controls & Information Panel
       VStack(spacing: 10) {
@@ -121,6 +117,7 @@ struct PlacesUIKitDemo: View {
               }
               .buttonStyle(.bordered)
               .tint(selectedLandmarkID == landmark.id ? .blue : .secondary)
+              .disabled(isFlying)
             }
           }
           .padding(.horizontal)
@@ -148,7 +145,7 @@ struct PlacesUIKitDemo: View {
         }
         .padding(.horizontal)
 
-        // Live status & explanation
+        // Live status
         VStack(alignment: .leading, spacing: 4) {
           if let placeId = lastTappedPlaceID {
             HStack {
@@ -165,15 +162,11 @@ struct PlacesUIKitDemo: View {
             HStack {
               Image(systemName: "hand.tap")
                 .foregroundColor(.secondary)
-              Text("Tap any 3D building or POI on the map to trigger place details.")
+              Text("Tap any POI icon")
                 .font(.caption)
                 .foregroundColor(.secondary)
             }
           }
-
-          Text("GoogleMaps3DKit embeds the Places UI Kit details sheet directly. Returning .default displays the sheet; returning .none suppresses it.")
-            .font(.caption2)
-            .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(8)
@@ -186,14 +179,11 @@ struct PlacesUIKitDemo: View {
     }
     .navigationTitle("Places UI Kit")
     .navigationBarTitleDisplayMode(.inline)
-    .onAppear {
-      selectLandmark(landmarks[0])
-    }
   }
 
   private func selectLandmark(_ landmark: LandmarkItem) {
     selectedLandmarkID = landmark.id
-    lastTappedPlaceID = landmark.id
+    isFlying = true
     targetCamera = Camera(
       center: .init(
         latitude: landmark.coordinate.latitude,
@@ -205,7 +195,11 @@ struct PlacesUIKitDemo: View {
       roll: 0,
       range: 400
     )
-    flyTrigger.toggle()
+    // Defer incrementing flyTrigger to the next MainActor turn so SwiftUI first updates
+    // .flyCameraTo(targetCamera, ...) with the new destination before firing onChange(of: trigger).
+    Task { @MainActor in
+      flyTrigger += 1
+    }
   }
 }
 

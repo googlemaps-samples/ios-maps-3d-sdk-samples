@@ -16,17 +16,57 @@ import GoogleMaps3D
 import SwiftUI
 
 struct CloudBasedMapStylingDemo: View {
-  @State private var camera: Camera = .newYork
   @State private var mode: MapMode = .roadmap
+  @State private var styleLoadError: Bool = false
 
-  let roadmapMapId: String = "f0c0fefe479f994a53950363"
-  let hybridMapId: String = "f0c0fefe479f994a93e70e90"
+  private let roadmapMapId: String = "f0c0fefe479f994a53950363"
+  private let hybridMapId: String = "f0c0fefe479f994a93e70e90"
 
-  var body: some View {
-    VStack(spacing:20){
-      Map(camera: $camera, mode: .roadmap)
-        // https://developers.google.com/maps/documentation/get-map-id
-        .style(mapID: roadmapMapId)
+  private var activeMapId: String {
+    switch mode {
+    case .roadmap:
+      return roadmapMapId
+    case .hybrid, .satellite:
+      return hybridMapId
+    default:
+      return roadmapMapId
     }
   }
+
+  var body: some View {
+    VStack(spacing: 12) {
+      // https://developers.google.com/maps/documentation/get-map-id
+      Map(initialCamera: .newYork, mode: mode)
+        .style(mapID: activeMapId) {
+          styleLoadError = true
+        }
+
+      VStack(spacing: 8) {
+        Picker("Map Mode", selection: $mode) {
+          Text("Roadmap").tag(MapMode.roadmap)
+          Text("Hybrid").tag(MapMode.hybrid)
+          Text("Satellite").tag(MapMode.satellite)
+        }
+        .pickerStyle(.segmented)
+
+        if styleLoadError {
+          Text("Failed to load cloud style for Map ID '\(activeMapId)'.")
+            .font(.caption.bold())
+            .foregroundColor(.red)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+      }
+      .padding(.horizontal)
+      .padding(.bottom, 8)
+    }
+    .navigationTitle("Cloud Map Styling")
+    .navigationBarTitleDisplayMode(.inline)
+    .onChange(of: activeMapId) { _, _ in
+      styleLoadError = false
+    }
+  }
+}
+
+#Preview {
+  CloudBasedMapStylingDemo()
 }

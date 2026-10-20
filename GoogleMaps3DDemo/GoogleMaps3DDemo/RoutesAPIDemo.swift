@@ -16,54 +16,96 @@ import GoogleMaps3D
 import SwiftUI
 
 struct RoutesAPIDemo: View {
+  private static let origin = LatLngAltitude(latitude: 51.5072178, longitude: -0.1275862)
+  private static let destination = LatLngAltitude(latitude: 51.5007292, longitude: -0.1246254)
+
+  // Cache static Marker3Ds outside body so they are not re-rasterized on camera changes
+  @MainActor
+  private static let originMarker = Marker3D(
+    position: origin,
+    altitudeMode: .clampToGround,
+    label: "Origin"
+  )
+
+  @MainActor
+  private static let destinationMarker = Marker3D(
+    position: destination,
+    altitudeMode: .clampToGround,
+    label: "Destination"
+  )
+
   @State private var routePath: [LatLngAltitude] = []
   @State private var camera: Camera = .init(
     center: .init(latitude: 51.5072, longitude: -0.1276, altitude: 0),
     range: 400
   )
-  @State private var origin = LatLngAltitude(latitude: 51.5072178, longitude: -0.1275862)
-  @State private var destination = LatLngAltitude(latitude: 51.5007292, longitude: -0.1246254)
-  @StateObject private var routeHelper: RouteHelper = RouteHelper()
+  @State private var isShowingError: Bool = false
+  @State private var errorMessage: String = ""
+  @StateObject private var routeHelper = RouteHelper()
 
   var body: some View {
     VStack {
       Map(camera: $camera, mode: .roadmap) {
         if !routePath.isEmpty {
           Polyline(path: routePath, altitudeMode: .relativeToMesh)
-            .stroke(.init(strokeColor: .systemBlue, strokeWidth: 12.0, outerColor: .systemBlue))
-            .contour(.init(geodesic: true, extruded: true, drawOccludedSegments: true))
+            .stroke(
+              .init(
+                strokeColor: .systemBlue,
+                strokeWidth: 12.0,
+                outerColor: .white,
+                outerWidth: 0.25
+              )
+            )
+            .contour(
+              .init(
+                geodesic: true,
+                extruded: false,
+                drawOccludedSegments: true
+              )
+            )
         }
-        Marker3D(position: origin, altitudeMode: .clampToGround, label: "Origin")
-        Marker3D(position: destination, altitudeMode: .clampToGround, label: "Destination")
+        Self.originMarker
+        Self.destinationMarker
       }
+
+      Button("Calculate Route") {
+        // You need an API Key that has Routes API enabled.
+        // Either:
+        // 1. Enable Routes API on your existing Maps 3D API key, or
+        // 2. Comment this line and edit RouteHelper.swift to add a Routes API key there.
+        if routeHelper.routesApiKey.isEmpty {
+          routeHelper.routesApiKey = Map.apiKey
+        }
+        Task {
+          await routeRequest()
+        }
+      }
+      .buttonStyle(.borderedProminent)
+      .padding(.bottom, 8)
     }
-    Button("Calculate Route") {
-      // You need an API Key that has Routes API enabled.
-      // Either
-      // 1. Enable Routes API on your existing Maps 3D API key
-      // Or
-      // 2. Comment this line and edit RouteHelper.swift to add a Routes API key there.
-      routeHelper.routesApiKey = Map.apiKey
-      Task {
-        await routeRequest()
-      }
+    .navigationTitle("Routes API Demo")
+    .navigationBarTitleDisplayMode(.inline)
+    .alert("Routes API Error", isPresented: $isShowingError) {
+      Button("OK", role: .cancel) {}
+    } message: {
+      Text(errorMessage)
     }
   }
 
+  @MainActor
   private func routeRequest() async {
     do {
-      let route = try await routeHelper.fetchRoute(origin: origin, destination: destination)
-
-      // Calculate camera to fit the route
+      let route = try await routeHelper.fetchRoute(
+        origin: Self.origin,
+        destination: Self.destination
+      )
+      self.routePath = route
       if let newCamera = routeHelper.calculateCamera(for: route) {
-
-        await MainActor.run {
-          self.camera = newCamera
-          self.routePath = route
-        }
+        self.camera = newCamera
       }
     } catch {
-      print("Error during route request: \(error)")
+      errorMessage = error.localizedDescription
+      isShowingError = true
     }
   }
 }
