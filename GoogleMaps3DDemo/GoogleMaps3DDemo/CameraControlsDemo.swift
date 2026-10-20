@@ -17,10 +17,30 @@ import SwiftUI
 
 struct CameraControlsDemo: View {
   @State private var camera: Camera = .devilsTower
+  @State private var flyToTrigger: Int = 0
+  @State private var flyAroundTrigger: Int = 0
+  @State private var isCameraAnimating: Bool = false
 
   var body: some View {
     VStack(spacing: 12) {
       Map(camera: $camera, mode: .hybrid)
+        .flyCameraTo(
+          .devilsTower,
+          duration: 2.5,
+          trigger: flyToTrigger,
+          completion: {
+            isCameraAnimating = false
+          }
+        )
+        .flyCameraAround(
+          camera,
+          duration: 6.0,
+          repeatCount: 1.0,
+          trigger: flyAroundTrigger,
+          completion: {
+            isCameraAnimating = false
+          }
+        )
 
       VStack(spacing: 8) {
         controlRow(
@@ -52,10 +72,21 @@ struct CameraControlsDemo: View {
           specifier: "%.0f°"
         )
 
-        Button("Reset Camera") {
-          camera = .devilsTower
+        HStack(spacing: 12) {
+          Button("Orbit 360°") {
+            isCameraAnimating = true
+            flyAroundTrigger += 1
+          }
+          .buttonStyle(.borderedProminent)
+          .disabled(isCameraAnimating)
+
+          Button("Fly to Devils Tower") {
+            isCameraAnimating = true
+            flyToTrigger += 1
+          }
+          .buttonStyle(.bordered)
+          .disabled(isCameraAnimating)
         }
-        .buttonStyle(.bordered)
         .padding(.top, 4)
       }
       .padding(.horizontal)

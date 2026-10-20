@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 import GoogleMaps3D
 import SwiftUI
 
@@ -25,16 +24,25 @@ struct FieldOfViewDemo: View {
 
       HStack {
         Text("Field of View")
+        // Camera.fieldOfView supports angles in 5.0°...80.0°
         Slider(
           value: Binding(
             get: { camera.fieldOfView.degrees },
             set: { camera.fieldOfView = .degrees($0) }
           ),
-          in: 0...120
+          in: 5...80
         )
         Text("\(Int(camera.fieldOfView.degrees))°")
+          .frame(width: 40, alignment: .trailing)
+          .monospacedDigit()
       }
       .padding()
     }
+    .navigationTitle("Field of View")
+    .navigationBarTitleDisplayMode(.inline)
   }
+}
+
+#Preview {
+  FieldOfViewDemo()
 }

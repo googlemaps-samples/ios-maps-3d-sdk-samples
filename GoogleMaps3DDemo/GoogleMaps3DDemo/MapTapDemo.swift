@@ -17,38 +17,47 @@ import GoogleMaps3DKit
 import SwiftUI
 
 struct MapTapDemo: View {
-  @State var camera: Camera = .sanFrancisco
-  @State var isPresented = false
-  @State var tapInfo: MapTapInfo?
-  @State var alertMessage: String = ""
-  @State var placeInfoEnabled: Bool = true
+  @State private var lastTapMessage: String = "Tap anywhere on the map or on a Place POI."
+  @State private var placeInfoEnabled: Bool = true
 
   var body: some View {
     VStack(spacing: 0) {
-      Map(camera: $camera, mode: .hybrid)
-        .placeInformationEnabled(placeInfoEnabled)
-        .onPlaceTap { placeId in
-          alertMessage = "GoogleMaps3DKit onPlaceTap: \(placeId)"
-          isPresented = true
-          return .default
-        }
-        .onTap { tapInfo in
-          self.tapInfo = tapInfo
-          isPresented = true
-          switch tapInfo.content {
-            case .map:
-              alertMessage = "Map tapped at \(String(format: "%.4f, %.4f", tapInfo.location.latitude, tapInfo.location.longitude))"
-            case .place(let placeId):
-              alertMessage = "Place tapped: \(placeId)"
-            default:
-              alertMessage = "Unknown tap"
+      ZStack(alignment: .top) {
+        Map(initialCamera: .sanFrancisco, mode: .hybrid)
+          .placeInformationEnabled(placeInfoEnabled)
+          .onPlaceTap { placeId in
+            lastTapMessage = "GoogleMaps3DKit onPlaceTap: \(placeId)"
+            return .default
           }
-        }
-        .alert(
-          alertMessage,
-          isPresented: $isPresented,
-          actions: { Button("OK") {} }
-        )
+          .onTap { tapInfo in
+            switch tapInfo.content {
+            case .map:
+              lastTapMessage = String(
+                format: "Map tapped at %.4f, %.4f (alt: %.0fm)",
+                tapInfo.location.latitude,
+                tapInfo.location.longitude,
+                tapInfo.location.altitude
+              )
+            case .place(let placeId):
+              // When placeInfoEnabled is true, .onPlaceTap handles the place tap event and
+              // opens the built-in Place Details sheet. Avoid overwriting its message here.
+              if !placeInfoEnabled {
+                lastTapMessage = "Map.onTap(.place): \(placeId)"
+              }
+            default:
+              lastTapMessage = "Unknown tap"
+            }
+          }
+
+        // Non-blocking banner so the built-in GoogleMaps3DKit Place Details sheet can present freely
+        Text(lastTapMessage)
+          .font(.caption.monospaced())
+          .padding(.horizontal, 12)
+          .padding(.vertical, 8)
+          .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
+          .padding(.top, 12)
+          .padding(.horizontal, 16)
+      }
 
       HStack {
         Toggle("Place Information Enabled", isOn: $placeInfoEnabled)

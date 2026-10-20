@@ -14,118 +14,162 @@
 
 import CoreMotion
 import Foundation
-import SwiftUI
+import UIKit
 
-/// Manages CoreMotion sensor streaming with filtering, tare calibration, and deadband handling.
+/// Manages CoreMotion sensor streaming with tare calibration, deadband filtering, and EMA smoothing.
+///
+/// Sensor samples are stored as plain properties (without `@Published`) so CoreMotion's 60Hz callback
+/// does not invalidate SwiftUI views outside the `TimelineView` frame clock.
 @MainActor
-public class FlightMotionManager: ObservableObject {
+public final class FlightMotionManager {
   private let motionManager = CMMotionManager()
 
-  /// Filtered pitch angle in degrees (positive = nose up / climb, negative = nose down / dive)
-  @Published public var filteredPitch: Double = 0.0
+  /// Filtered pitch angle in degrees (positive = pull back / climb / look up, negative = push forward / dive / look down).
+  public private(set) var filteredPitch: Double = 0.0
 
-  /// Filtered bank/roll angle in degrees (positive = bank right, negative = bank left)
-  @Published public var filteredRoll: Double = 0.0
+  /// Filtered bank/roll angle in degrees (positive = tilt right / bank right, negative = tilt left / bank left).
+  public private(set) var filteredRoll: Double = 0.0
 
-  /// Whether device motion hardware is active and available
-  @Published public var isMotionAvailable: Bool = false
+  /// Whether device motion hardware is available on this device.
+  public var isMotionAvailable: Bool {
+    motionManager.isDeviceMotionAvailable
+  }
 
   // Calibration offsets (tare reference)
   private var pitchOffset: Double = 0.0
   private var rollOffset: Double = 0.0
+  private var needsCalibration: Bool = true
 
   // Filter tuning parameters
-  private let smoothingFactor: Double = 0.22 // Exponential Moving Average (EMA) alpha
-  private let deadbandDegrees: Double = 2.0   // Ignore hand tremors under 2 degrees
-  private let maxPitchDegrees: Double = 45.0  // Clamp max pitch
-  private let maxRollDegrees: Double = 60.0   // Clamp max bank angle
+  private let smoothingFactor: Double = 0.25
+  private let deadbandDegrees: Double = 1.5
+  private let maxPitchDegrees: Double = 45.0
+  private let maxRollDegrees: Double = 60.0
 
-  public init() {
-    startMotionUpdates()
-  }
+  public init() {}
 
   deinit {
     motionManager.stopDeviceMotionUpdates()
   }
 
-  /// Starts 60Hz device motion streaming using the Z-vertical attitude reference frame.
+  /// Starts 60Hz device motion streaming.
   public func startMotionUpdates() {
-    guard motionManager.isDeviceMotionAvailable else {
-      isMotionAvailable = false
+    guard motionManager.isDeviceMotionAvailable, !motionManager.isDeviceMotionActive else {
       return
     }
 
-    isMotionAvailable = true
     motionManager.deviceMotionUpdateInterval = 1.0 / 60.0
-    motionManager.showsDeviceMovementDisplay = true
-
     motionManager.startDeviceMotionUpdates(
       using: .xArbitraryZVertical,
       to: .main
     ) { [weak self] motion, _ in
-      guard let self = self, let motion = motion else { return }
+      guard let self, let motion else { return }
       self.processMotion(motion)
     }
   }
 
-  /// Stops sensor updates to conserve battery.
+  /// Stops sensor updates when the view disappears.
   public func stopMotionUpdates() {
     motionManager.stopDeviceMotionUpdates()
   }
 
   /// Sets the current handheld orientation as the neutral (level flight) baseline.
   public func calibrateZeroLevel() {
-    guard let attitude = motionManager.deviceMotion?.attitude else { return }
-    let rawAngles = extractLandscapeAngles(from: attitude)
-    self.pitchOffset = rawAngles.pitch
-    self.rollOffset = rawAngles.roll
-    self.filteredPitch = 0.0
-    self.filteredRoll = 0.0
+    if let motion = motionManager.deviceMotion {
+      let rawAngles = extractAngles(from: motion.gravity)
+      pitchOffset = rawAngles.pitch
+      rollOffset = rawAngles.roll
+      needsCalibration = false
+    } else {
+      needsCalibration = true
+    }
+    filteredPitch = 0.0
+    filteredRoll = 0.0
   }
 
-  /// Processes raw CoreMotion attitude into smoothed, calibrated flight control signals.
+  /// Processes raw CoreMotion gravity into smoothed, calibrated flight control angles.
   private func processMotion(_ motion: CMDeviceMotion) {
-    let raw = extractLandscapeAngles(from: motion.attitude)
+    let raw = extractAngles(from: motion.gravity)
 
-    // 1. Apply calibration tare (subtract neutral grip baseline)
-    let calibratedPitch = raw.pitch - pitchOffset
-    let calibratedRoll = raw.roll - rollOffset
+    if needsCalibration {
+      pitchOffset = raw.pitch
+      rollOffset = raw.roll
+      needsCalibration = false
+    }
+
+    // 1. Apply calibration tare using shortest angular delta so wrapping across ±180° never jumps
+    let calibratedPitch = FlightMath.shortestAngleDelta(from: pitchOffset, to: raw.pitch)
+    let calibratedRoll = FlightMath.shortestAngleDelta(from: rollOffset, to: raw.roll)
 
     // 2. Apply deadband filter to eliminate micro hand tremor jitter
-    let deadbandedPitch = applyDeadband(calibratedPitch, threshold: deadbandDegrees)
-    let deadbandedRoll = applyDeadband(calibratedRoll, threshold: deadbandDegrees)
+    let deadbandedPitch = FlightMath.applyDeadband(calibratedPitch, threshold: deadbandDegrees)
+    let deadbandedRoll = FlightMath.applyDeadband(calibratedRoll, threshold: deadbandDegrees)
 
     // 3. Clamp to safe flight envelope
-    let clampedPitch = max(-maxPitchDegrees, min(maxPitchDegrees, deadbandedPitch))
-    let clampedRoll = max(-maxRollDegrees, min(maxRollDegrees, deadbandedRoll))
+    let clampedPitch = FlightMath.clamp(deadbandedPitch, min: -maxPitchDegrees, max: maxPitchDegrees)
+    let clampedRoll = FlightMath.clamp(deadbandedRoll, min: -maxRollDegrees, max: maxRollDegrees)
 
     // 4. Low-pass exponential moving average (EMA) filter
-    self.filteredPitch = self.filteredPitch + smoothingFactor * (clampedPitch - self.filteredPitch)
-    self.filteredRoll = self.filteredRoll + smoothingFactor * (clampedRoll - self.filteredRoll)
+    filteredPitch = FlightMath.emaSmooth(
+      current: filteredPitch,
+      target: clampedPitch,
+      alpha: smoothingFactor
+    )
+    filteredRoll = FlightMath.emaSmooth(
+      current: filteredRoll,
+      target: clampedRoll,
+      alpha: smoothingFactor
+    )
   }
 
-  /// Extracts pitch and roll angles adapted for holding the device in Landscape mode like a flight yoke.
-  private func extractLandscapeAngles(from attitude: CMAttitude) -> (pitch: Double, roll: Double) {
-    // In landscape orientation (holding phone horizontally with two hands):
-    // Tilting top edge towards user -> positive pitch (Pull back to climb)
-    // Tilting top edge away from user -> negative pitch (Push forward to dive)
-    // Tilting right hand down -> positive roll (Bank right to turn right)
-    // Tilting left hand down -> negative roll (Bank left to turn left)
-    let pitchDeg = -attitude.roll * (180.0 / .pi)
-    let rollDeg = attitude.pitch * (180.0 / .pi)
-    return (pitchDeg, rollDeg)
-  }
+  /// Extracts screen-aligned pitch and roll angles from the gravity vector across all interface orientations:
+  /// - Pulling the top edge back toward the user -> positive `pitch` (climb / look up).
+  /// - Tipping the top edge forward away from the user -> negative `pitch` (dive / look down).
+  /// - Tilting the right side down -> positive `roll` (bank right / turn right).
+  /// - Tilting the left side down -> negative `roll` (bank left / turn left).
+  private func extractAngles(from g: CMAcceleration) -> (pitch: Double, roll: Double) {
+    let orientation = currentInterfaceOrientation()
+    let sx: Double
+    let sy: Double
+    let sz = g.z
 
-  private func applyDeadband(_ value: Double, threshold: Double) -> Double {
-    if abs(value) < threshold {
-      return 0.0
+    switch orientation {
+    case .landscapeRight:
+      // UIInterfaceOrientation.landscapeRight: device top on left, USB-C on right
+      sx = -g.y
+      sy = g.x
+    case .landscapeLeft:
+      // UIInterfaceOrientation.landscapeLeft: device top on right, USB-C on left
+      sx = g.y
+      sy = -g.x
+    case .portraitUpsideDown:
+      sx = -g.x
+      sy = -g.y
+    default:
+      // Portrait: device top at top, right edge at right
+      sx = g.x
+      sy = g.y
     }
-    return value > 0 ? (value - threshold) : (value + threshold)
+
+    // In screen coordinates (sx right, sy up, sz out of screen toward user):
+    // Pulling top edge back increases -sy relative to -sz -> positive pitch (climb / look up).
+    // Tipping top edge forward decreases -sy relative to -sz -> negative pitch (dive / look down).
+    let pitch = atan2(-sy, -sz) * 180.0 / .pi
+
+    // Tilting right hand down increases +sx -> positive roll (bank right into turn).
+    // Using hypot(sy, sz) keeps roll sensitive across all holding angles from flat to vertical.
+    let roll = atan2(sx, hypot(sy, sz)) * 180.0 / .pi
+
+    return (pitch, roll)
   }
 
-  /// Manual override for Simulator testing where hardware sensors are unavailable.
-  public func setManualInputs(pitch: Double, roll: Double) {
-    self.filteredPitch = pitch
-    self.filteredRoll = roll
+  private func currentInterfaceOrientation() -> UIInterfaceOrientation {
+    let scenes = UIApplication.shared.connectedScenes
+    for scene in scenes {
+      if let windowScene = scene as? UIWindowScene {
+        return windowScene.interfaceOrientation
+      }
+    }
+    return .portrait
   }
 }

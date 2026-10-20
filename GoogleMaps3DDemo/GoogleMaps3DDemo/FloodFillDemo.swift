@@ -16,29 +16,25 @@ import GoogleMaps3D
 import SwiftUI
 
 struct FloodFillDemo: View {
-  @State private var camera: Camera = .init(
+  private static let initialCamera = Camera(
     center: .dryFalls,
     heading: 45,
     tilt: 45,
     roll: 0,
-    range: 500,
-    fieldOfView: .init(degrees: 100),
-    altitudeMode: .relativeToGround,
+    range: 1500,
+    fieldOfView: .degrees(75)
   )
-  @State private var currentAltitude: Double = 0.0
-  @State private var initialAltitude: Double = 0.0
 
-  //@State private var polygonPoints: [LatLngAltitude] = []
+  private static let baseElevationMeters: Double = LatLngAltitude.dryFalls.altitude
+  private static let maxElevationMeters: Double = 600.0
 
-  var floodPolygon: Polygon {
+  @State private var currentAltitude: Double = LatLngAltitude.dryFalls.altitude
 
-    let polygonPoints: [LatLngAltitude] = calculatePolygon(center: camera.center)
+  private var floodPolygon: Polygon {
+    let path = calculatePolygon(center: .dryFalls, altitude: currentAltitude)
 
-    let path = polygonPoints.map { latlng in
-      LatLngAltitude(latitude: latlng.latitude, longitude: latlng.longitude, altitude: currentAltitude)
-    }
-
-    return Polygon(path: path, altitudeMode: .relativeToGround)
+    // Use .absolute altitudeMode so all vertices form a level water plane at a uniform MSL elevation
+    return Polygon(path: path, altitudeMode: .absolute)
       .style(
         GoogleMaps3D.Polygon.StyleOptions(
           fillColor: .init(red: 0.0, green: 0.5, blue: 1.0, alpha: 0.75),
@@ -49,45 +45,51 @@ struct FloodFillDemo: View {
 
   var body: some View {
     VStack {
-      Map(camera: $camera, mode: .hybrid) {
+      Map(initialCamera: Self.initialCamera, mode: .hybrid) {
         floodPolygon
       }
 
-      VStack(spacing: 20) {
-        Text("Flood level: \(Int(currentAltitude))m")
+      VStack(spacing: 16) {
+        Text("Flood Water Elevation: \(Int(currentAltitude))m MSL")
           .font(.headline)
 
-        Slider(value: $currentAltitude, in: (0...500)) {
+        Slider(
+          value: $currentAltitude,
+          in: Self.baseElevationMeters...Self.maxElevationMeters
+        ) {
           Text("Altitude")
         } minimumValueLabel: {
-          Text("0")
+          Text("\(Int(Self.baseElevationMeters))m")
         } maximumValueLabel: {
-          Text("500")
+          Text("\(Int(Self.maxElevationMeters))m")
         }
         .padding(.horizontal)
-        Text("Initial: \(Int(initialAltitude))m, Current: \(Int(currentAltitude))m")
-          .font(.headline)
+
+        Text(
+          "Base: \(Int(Self.baseElevationMeters))m MSL | Rise: +\(Int(currentAltitude - Self.baseElevationMeters))m"
+        )
+        .font(.subheadline)
+        .foregroundColor(.secondary)
       }
       .padding()
       .background(.ultraThinMaterial)
     }
-    .onAppear {
-        initialAltitude = camera.center.altitude
-        currentAltitude = initialAltitude
-      }
+    .navigationTitle("Flood Fill Demo")
+    .navigationBarTitleDisplayMode(.inline)
   }
 
-
-  private func calculatePolygon(center: LatLngAltitude) -> [LatLngAltitude] {
-    let altitude = center.altitude + 50
-    // +/- 0.5 degress = 90-110km approx depending on latitude
+  private func calculatePolygon(center: LatLngAltitude, altitude: Double) -> [LatLngAltitude] {
+    let delta = 0.05
     return [
-      .init(latitude: center.latitude + 0.5, longitude: center.longitude - 0.5, altitude: altitude),
-      .init(latitude: center.latitude + 0.5, longitude: center.longitude + 0.5, altitude: altitude),
-      .init(latitude: center.latitude - 0.5, longitude: center.longitude + 0.5, altitude: altitude),
-      .init(latitude: center.latitude - 0.5, longitude: center.longitude - 0.5, altitude: altitude),
-      .init(latitude: center.latitude + 0.5, longitude: center.longitude - 0.5, altitude: altitude),
+      .init(latitude: center.latitude + delta, longitude: center.longitude - delta, altitude: altitude),
+      .init(latitude: center.latitude + delta, longitude: center.longitude + delta, altitude: altitude),
+      .init(latitude: center.latitude - delta, longitude: center.longitude + delta, altitude: altitude),
+      .init(latitude: center.latitude - delta, longitude: center.longitude - delta, altitude: altitude),
+      .init(latitude: center.latitude + delta, longitude: center.longitude - delta, altitude: altitude),
     ]
   }
 }
 
+#Preview {
+  FloodFillDemo()
+}

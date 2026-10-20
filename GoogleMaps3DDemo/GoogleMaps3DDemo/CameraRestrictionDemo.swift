@@ -16,21 +16,23 @@ import GoogleMaps3D
 import SwiftUI
 
 struct CameraRestrictionDemo: View {
-  @State var camera:Camera = .init(
-    center: .init(latitude: 37.7905, longitude: -122.3989,) as LatLngAltitude,
+  private static let initialCamera = Camera(
+    center: .init(latitude: 37.7905, longitude: -122.3989),
     heading: 279,
     tilt: 71,
     range: 2500
   )
 
   var body: some View {
-    Map(camera: $camera, mode: .hybrid)
+    Map(initialCamera: Self.initialCamera, mode: .hybrid)
       .cameraRestrictions([
         .bounds(.init(latitude: 37.7...37.8, longitude: (-122.4)...(-122.3))),
         .altitude(1000...10000),
         .heading(90...300),
         .tilt(30...90)
       ])
+      .navigationTitle("Camera Restrictions")
+      .navigationBarTitleDisplayMode(.inline)
   }
 }
 

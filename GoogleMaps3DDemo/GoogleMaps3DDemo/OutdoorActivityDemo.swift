@@ -95,19 +95,47 @@ struct OutdoorActivityDemo: View {
     altitudeMode: .absolute
   )
 
+  // Static Marker3Ds cached outside body so Marker3D.init PNG rasterization is only performed once
+  @MainActor
+  private static let startMarker = Marker3D(
+    position: yosemiteTrail[0],
+    altitudeMode: .relativeToMesh,
+    label: "Start",
+    style: .pin(.init(backgroundColor: .blue))
+  )
+
+  @MainActor
+  private static let destinationMarker = Marker3D(
+    position: yosemiteTrail[yosemiteTrail.count - 1],
+    altitudeMode: .relativeToMesh,
+    label: "Destination",
+    style: .pin(.init(backgroundColor: .green))
+  )
+
+  // Hiker Marker3D stored in @State so Marker3D.init rasterizes the PNG texture only once,
+  // while mutating `hikerMarker.position` smoothly animates the 3D marker along the trail.
+  @State private var hikerMarker = Marker3D(
+    position: yosemiteTrail[0],
+    altitudeMode: .relativeToMesh,
+    extruded: true,
+    label: "Hiker",
+    style: .pin(.init(backgroundColor: .red))
+  )
+
   // User-configurable speed multiplier (1x to 100x walking speed)
   @State private var speedMultiplier: Double = 20.0
   @State private var isAnimating: Bool = false
+  @State private var isFlyingToTrail: Bool = false
+  @State private var flyToTrailTrigger: Int = 0
 
   // Simulation state
   @State private var accumulatedDistance: Double = 0.0
   @State private var lastFrameDate: Date? = nil
-  @State private var hikerPosition: LatLngAltitude = yosemiteTrail[0]
 
   // Camera state
   @State private var camera: Camera = overviewCamera
 
-  // Base human walking pace in meters per second (approx 3.5 mph)
+  // Base human walking pace in meters per second
   private let baseSpeedMps: Double = 1.56
 
   var body: some View {
@@ -121,7 +149,8 @@ struct OutdoorActivityDemo: View {
                 .init(
                   strokeColor: .systemOrange,
                   strokeWidth: 8.0,
-                  outerColor: .white
+                  outerColor: .white,
+                  outerWidth: 0.25
                 )
               )
               .contour(
@@ -132,35 +161,22 @@ struct OutdoorActivityDemo: View {
                 )
               )
 
-            // Start Marker (Trailhead)
-            if let start = Self.yosemiteTrail.first {
-              Marker3D(
-                position: start,
-                altitudeMode: .relativeToMesh,
-                label: "Start",
-                style: .pin(.init(backgroundColor: .blue))
-              )
-            }
-
-            // Destination Marker (Summit Crest)
-            if let destination = Self.yosemiteTrail.last {
-              Marker3D(
-                position: destination,
-                altitudeMode: .relativeToMesh,
-                label: "Destination",
-                style: .pin(.init(backgroundColor: .green))
-              )
-            }
-
-            // Animated Hiker Marker progressing along the trail
-            Marker3D(
-              position: hikerPosition,
-              altitudeMode: .relativeToMesh,
-              extruded: true,
-              label: "Hiker",
-              style: .pin(.init(backgroundColor: .red))
-            )
+            // Cached trailhead, summit, and animated hiker Marker3Ds
+            Self.startMarker
+            Self.destinationMarker
+            hikerMarker
           }
+          .flyCameraTo(
+            Self.activeHikeCamera,
+            duration: 1.5,
+            trigger: flyToTrailTrigger,
+            completion: {
+              guard isFlyingToTrail else { return }
+              isFlyingToTrail = false
+              lastFrameDate = .now
+              isAnimating = true
+            }
+          )
           .onChange(of: context.date) { _, newDate in
             if isAnimating {
               updateSimulation(at: newDate)
@@ -170,10 +186,10 @@ struct OutdoorActivityDemo: View {
 
         // Live Real-Time Debug HUD Overlay
         VStack(alignment: .leading, spacing: 2) {
-          Text("Hiker: \(hikerPosition.latitude, specifier: "%.5f"), \(hikerPosition.longitude, specifier: "%.5f")")
+          Text("Hiker: \(hikerMarker.position.latitude, specifier: "%.5f"), \(hikerMarker.position.longitude, specifier: "%.5f")")
           Text("Cam Center: \(camera.center.latitude, specifier: "%.5f"), \(camera.center.longitude, specifier: "%.5f") (alt: \(camera.center.altitude, specifier: "%.0f")m)")
           Text("Cam Range: \(camera.range, specifier: "%.0f")m | Tilt: \(camera.tilt, specifier: "%.0f")° | Heading: \(camera.heading, specifier: "%.0f")°")
-          Text("AltMode: \(String(describing: camera.altitudeMode)) | Progress: \(accumulatedDistance, specifier: "%.0f")m / \(trailMetadata.totalLength, specifier: "%.0f")m")
+          Text("Progress: \(accumulatedDistance, specifier: "%.0f")m / \(trailMetadata.totalLength, specifier: "%.0f")m")
         }
         .font(.system(size: 9, weight: .bold, design: .monospaced))
         .foregroundColor(.primary)
@@ -188,23 +204,25 @@ struct OutdoorActivityDemo: View {
         HStack {
           Text("Speed: \(Int(speedMultiplier))x")
             .font(.caption.monospacedDigit().bold())
-            .frame(width: 80, alignment: .leading)
+            .frame(width: 90, alignment: .leading)
           Slider(value: $speedMultiplier, in: 1.0...100.0, step: 1.0)
-          Text("\(speedMultiplier * 3.5, specifier: "%.0f") mph")
-            .font(.caption.monospacedDigit())
-            .foregroundColor(.secondary)
-            .frame(width: 50, alignment: .trailing)
         }
 
         HStack(spacing: 16) {
-          Button(isAnimating ? "Pause" : "Start Hike") {
-            isAnimating.toggle()
-            if isAnimating {
-              lastFrameDate = Date()
-              camera = Self.activeHikeCamera
+          Button(isAnimating ? "Pause" : (isFlyingToTrail ? "Zooming to Trail…" : "Start Hike")) {
+            if isAnimating || isFlyingToTrail {
+              isAnimating = false
+              isFlyingToTrail = false
+            } else if accumulatedDistance == 0 {
+              isFlyingToTrail = true
+              flyToTrailTrigger += 1
+            } else {
+              lastFrameDate = .now
+              isAnimating = true
             }
           }
           .buttonStyle(.borderedProminent)
+          .disabled(isFlyingToTrail)
 
           Button("Reset") {
             resetSimulation()
@@ -220,14 +238,19 @@ struct OutdoorActivityDemo: View {
     .onAppear {
       resetSimulation()
     }
+    .onDisappear {
+      isAnimating = false
+      isFlyingToTrail = false
+    }
   }
 
   private func resetSimulation() {
     isAnimating = false
+    isFlyingToTrail = false
     accumulatedDistance = 0.0
     lastFrameDate = nil
 
-    hikerPosition = trailMetadata.position(at: 0)
+    hikerMarker.position = trailMetadata.position(at: 0)
     camera = Self.overviewCamera
   }
 
@@ -236,16 +259,17 @@ struct OutdoorActivityDemo: View {
 
     let dt = currentDate.timeIntervalSince(lastFrameDate ?? currentDate)
     lastFrameDate = currentDate
+    guard dt > 0 && dt < 0.25 else { return }
 
     let effectiveSpeedMps = baseSpeedMps * speedMultiplier
     accumulatedDistance += dt * effectiveSpeedMps
 
     if accumulatedDistance >= trailMetadata.totalLength {
-      accumulatedDistance = 0.0 // Loop continuously
+      accumulatedDistance = 0.0
     }
 
-    // Update hiker position along the trail relative to the terrain mesh
-    hikerPosition = trailMetadata.position(at: accumulatedDistance)
+    // Mutate only the position property on the cached Marker3D instance
+    hikerMarker.position = trailMetadata.position(at: accumulatedDistance)
   }
 }
 

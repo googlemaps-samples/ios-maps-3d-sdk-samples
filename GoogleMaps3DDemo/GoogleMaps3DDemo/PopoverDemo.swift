@@ -12,13 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import SwiftUI
 import GoogleMaps3D
+import SwiftUI
 
 public struct PopoverDemo: View {
   @State private var isCoordinateWindowOpen: Bool = false
   @State private var isFerryBuildingMarkerPopoverOpen: Bool = false
+  @State private var autoCloseEnabled: Bool = false
+  @State private var autoPanEnabled: Bool = true
+
   private let ferryBuildingMarker = Marker3D(position: .ferryBuilding)
+
   public var body: some View {
     ZStack(alignment: .bottom) {
       Map(initialCamera: .sanFrancisco, mode: .satellite) {
@@ -26,7 +30,9 @@ public struct PopoverDemo: View {
           positionAnchor: .alcatrazIsland,
           altitudeMode: .relativeToGround,
           isOpen: $isCoordinateWindowOpen,
-          autoClosedEnabled: false,
+          offset: CGSize(width: 0, height: -10),
+          autoClosedEnabled: autoCloseEnabled,
+          autoPanEnabled: autoPanEnabled
         ) {
           VStack {
             Text("Alcatraz Island").font(.headline)
@@ -41,9 +47,12 @@ public struct PopoverDemo: View {
             shadow: Shadow(color: .blue.opacity(1), radius: 50, x: 0, y: 2)
           )
         )
+
         ferryBuildingMarker
           .popover(
             isOpen: $isFerryBuildingMarkerPopoverOpen,
+            autoClosedEnabled: autoCloseEnabled,
+            autoPanEnabled: autoPanEnabled,
             style: PopoverStyle(
               padding: 20,
               backgroundColor: .red,
@@ -59,15 +68,22 @@ public struct PopoverDemo: View {
             isFerryBuildingMarkerPopoverOpen.toggle()
           }
       }
-      VStack {
-        Toggle("Show Coordinate Window", isOn: $isCoordinateWindowOpen)
-        Toggle("Show Ferry Building Marker Popover", isOn: $isFerryBuildingMarkerPopoverOpen)
+
+      VStack(spacing: 8) {
+        Toggle("Show Coordinate Popover (Alcatraz)", isOn: $isCoordinateWindowOpen)
+        Toggle("Show Marker Popover (Ferry Building)", isOn: $isFerryBuildingMarkerPopoverOpen)
+        Divider()
+        Toggle("Auto-Close on Map Tap", isOn: $autoCloseEnabled)
+        Toggle("Auto-Pan Camera to Popover", isOn: $autoPanEnabled)
       }
+      .font(.subheadline)
       .padding()
       .background(.ultraThinMaterial)
       .clipShape(RoundedRectangle(cornerRadius: 10))
       .padding()
     }
+    .navigationTitle("Popover Demo")
+    .navigationBarTitleDisplayMode(.inline)
   }
 }
 

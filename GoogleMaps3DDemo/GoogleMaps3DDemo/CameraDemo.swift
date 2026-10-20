@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import SwiftUI
 import GoogleMaps3D
+import SwiftUI
 
 struct CameraDemo: View {
   @State var camera: Camera = .sanFrancisco
   @State private var animate: Bool = false
   @State private var flyAround: Bool = false
+  @State private var isFlying: Bool = false
 
   var body: some View {
     VStack {
@@ -27,18 +28,30 @@ struct CameraDemo: View {
           .seattle,
           duration: 5,
           trigger: animate,
-          completion: { flyAround = true }
+          completion: {
+            flyAround.toggle()
+          }
         )
         .flyCameraAround(
           .seattle,
           duration: 15,
           repeatCount: 0.5,
-          trigger: flyAround
+          trigger: flyAround,
+          completion: {
+            isFlying = false
+          }
         )
-      Button("Start Flying") {
+
+      Button(isFlying ? "Flying…" : "Start Flying") {
+        isFlying = true
         animate.toggle()
       }
+      .buttonStyle(.borderedProminent)
+      .disabled(isFlying)
+      .padding(.bottom, 8)
     }
+    .navigationTitle("Camera Demo")
+    .navigationBarTitleDisplayMode(.inline)
   }
 }
 

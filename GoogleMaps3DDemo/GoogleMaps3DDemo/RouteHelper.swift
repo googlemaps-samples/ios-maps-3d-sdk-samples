@@ -12,20 +12,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import Foundation
 import GoogleMaps3D
 import SwiftUI
+
+public enum RouteServiceError: LocalizedError {
+  case missingAPIKey
+  case apiError(String)
+  case emptyRoute
+
+  public var errorDescription: String? {
+    switch self {
+    case .missingAPIKey:
+      return "No Routes API key is configured. Set MAPS_API_KEY in Secrets.xcconfig or set RouteHelper.routesApiKey."
+    case .apiError(let message):
+      return "Routes API error: \(message). Ensure the Routes API is enabled on your Google Cloud project."
+    case .emptyRoute:
+      return "No route was returned for the requested origin and destination."
+    }
+  }
+}
 
 public class RouteHelper: ObservableObject {
   // Add an API Key here if you don't want to use the same key for Maps and Routes
   public var routesApiKey: String = ""
 
-  /// Fetches the route from the Google Maps Platform Routes API
+  /// Fetches the route from the Google Maps Platform Routes API.
   public func fetchRoute(origin: LatLngAltitude, destination: LatLngAltitude) async throws
     -> [LatLngAltitude]
   {
-    let apiKey = routesApiKey
-    if apiKey.isEmpty {
-      fatalError("No Routes API key set")
+    let apiKey = routesApiKey.trimmingCharacters(in: .whitespacesAndNewlines)
+    guard !apiKey.isEmpty else {
+      throw RouteServiceError.missingAPIKey
     }
     let url = URL(string: "https://routes.googleapis.com/directions/v2:computeRoutes")!
 
@@ -56,38 +74,47 @@ public class RouteHelper: ObservableObject {
       "travelMode": "DRIVE",
     ]
 
-    request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+    request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-    let (data, _) = try await URLSession.shared.data(for: request)
+    let (data, response) = try await URLSession.shared.data(for: request)
 
-    if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-      let routes = json["routes"] as? [[String: Any]],
-      let firstRoute = routes.first,
-      let polyline = firstRoute["polyline"] as? [String: Any],
-      let encodedPolyline = polyline["encodedPolyline"] as? String
-    {
+    if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+      if let errorDict = json["error"] as? [String: Any],
+        let message = errorDict["message"] as? String
+      {
+        throw RouteServiceError.apiError(message)
+      }
 
-      return self.processRoute(encodedPolyline: encodedPolyline)
-    } else {
-      return []
+      if let routes = json["routes"] as? [[String: Any]],
+        let firstRoute = routes.first,
+        let polyline = firstRoute["polyline"] as? [String: Any],
+        let encodedPolyline = polyline["encodedPolyline"] as? String
+      {
+        let decoded = processRoute(encodedPolyline: encodedPolyline)
+        guard !decoded.isEmpty else {
+          throw RouteServiceError.emptyRoute
+        }
+        return decoded
+      }
     }
+
+    if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
+      throw RouteServiceError.apiError("HTTP \(httpResponse.statusCode)")
+    }
+
+    throw RouteServiceError.emptyRoute
   }
 
-  /// Processes the encoded polyline string from the Routes API
+  /// Processes the encoded polyline string from the Routes API.
   private func processRoute(encodedPolyline: String) -> [LatLngAltitude] {
-    // Convert encoded polyline to 3D path
-    // The Routes API returns a 2D polyline, so we use .latLng dimensions
+    // The Routes API returns a 2D polyline; .latLng decoding initializes altitude to 0.0
     guard let path2D = [LatLngAltitude](encodedPath: encodedPolyline, dimensions: .latLng) else {
-      print("Failed to decode polyline")
       return []
     }
-
-    return path2D.map {
-      LatLngAltitude(latitude: $0.latitude, longitude: $0.longitude, altitude: 0)
-    }
+    return path2D
   }
 
-  /// Calculates a Camera view that contains the entire route shape
+  /// Calculates a Camera view that contains the entire route shape.
   public func calculateCamera(for path: [LatLngAltitude]) -> Camera? {
     guard !path.isEmpty else { return nil }
 
@@ -106,22 +133,18 @@ public class RouteHelper: ObservableObject {
     let centerLat = (minLat + maxLat) / 2.0
     let centerLng = (minLng + maxLng) / 2.0
 
-    // Rough estimation for range based on bounds
-    // 1 degree of latitude is approx 111km
+    // Rough estimation for range based on bounds (1 degree of latitude is approx 111km)
     let latDelta = maxLat - minLat
     let lngDelta = maxLng - minLng
     let maxDelta = max(latDelta, lngDelta)
 
-    // Calculate range (distance from camera to target)
-    // Multiplier of 111,000 converts degrees to meters.
-    // We multiply by an additional factor (e.g., 2.0) to add padding around the route.
     let range = maxDelta * 111_000 * 2.0
-    let safeRange = max(range, 400)  // Minimum range of 0.4km to avoid zooming in too much
+    let safeRange = max(range, 400)
 
     return Camera(
       center: LatLngAltitude(latitude: centerLat, longitude: centerLng, altitude: 0),
       heading: 0,
-      tilt: 65.0,  // Add a tilt for a better 3D effect
+      tilt: 65.0,
       range: safeRange
     )
   }

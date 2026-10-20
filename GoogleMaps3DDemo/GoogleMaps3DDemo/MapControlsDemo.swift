@@ -18,7 +18,6 @@ import SwiftUI
 /// Demonstrates the built-in UI map controls introduced in Maps 3D SDK v1.0.0,
 /// including position placement, orientation customization, and individual control toggles.
 struct MapControlsDemo: View {
-  @State private var camera: Camera = .sanFrancisco
   @State private var position: MapControlPosition = .trailing
   @State private var orientation: MapControlOrientation = .auto
 
@@ -31,7 +30,7 @@ struct MapControlsDemo: View {
 
   var body: some View {
     VStack(spacing: 0) {
-      Map(camera: $camera, mode: .hybrid)
+      Map(initialCamera: .sanFrancisco, mode: .hybrid)
         .mapControls(at: position, margin: 16, spacing: 8) {
           if showCompass {
             CompassControl()

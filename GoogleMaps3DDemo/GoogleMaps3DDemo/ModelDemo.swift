@@ -12,31 +12,47 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import SwiftUI
 import GoogleMaps3D
+import SwiftUI
 
 struct ModelDemo: View {
-  @State var camera: Camera = .sanFrancisco
-  @State var balloonModel: Model = .init(
-    position: .init(
-      latitude: 37.791376,
-      longitude: -122.397571,
-      altitude: 300.0),
-    url: URL(fileURLWithPath: fileUrl?.relativePath ?? ""),
-    altitudeMode: .absolute,
-    scale: .init(x: 5, y: 5, z: 5),
-    orientation: .init(heading: 0, tilt: 0, roll: 0)
+  private static let balloonModelUrl = Bundle.main.url(
+    forResource: "balloon",
+    withExtension: "glb"
   )
+
+  @State private var isShowingAlert: Bool = false
 
   var body: some View {
     VStack {
-      Map(camera: $camera, mode: .hybrid) {
-        balloonModel
+      Map(initialCamera: .sanFrancisco, mode: .hybrid) {
+        if let url = Self.balloonModelUrl {
+          Model(
+            position: .init(
+              latitude: 37.791376,
+              longitude: -122.397571,
+              altitude: 300.0
+            ),
+            url: url,
+            altitudeMode: .absolute,
+            scale: .init(x: 5, y: 5, z: 5),
+            orientation: .init(heading: 0, tilt: 0, roll: 0)
+          )
+          .onTap {
+            isShowingAlert = true
+          }
+        }
+      }
+      .alert("3D Balloon Model Tapped", isPresented: $isShowingAlert) {
+        Button("OK", role: .cancel) {}
+      } message: {
+        Text("You tapped the 3D balloon model above San Francisco.")
       }
     }
+    .navigationTitle("Model Demo")
+    .navigationBarTitleDisplayMode(.inline)
   }
 }
-private let fileUrl = Bundle.main.url(forResource: "balloon", withExtension: "glb")
 
 #Preview {
   ModelDemo()

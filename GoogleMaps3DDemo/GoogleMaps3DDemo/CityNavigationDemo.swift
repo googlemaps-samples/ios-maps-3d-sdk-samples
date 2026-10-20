@@ -62,6 +62,8 @@ struct CityNavigationDemo: View {
   @State private var speedMph: Double = 30.0
   @State private var cameraLookAheadMeters: Double = 60.0
   @State private var isAnimating: Bool = false
+  @State private var isFlyingToStart: Bool = false
+  @State private var flyToStartTrigger: Int = 0
 
   // 3D Model scaling (baked Z-up geometry enables pure tilt: 0, roll: 0 yaw rotation without gimbal lock)
   private let modelScale: Double = 0.075
@@ -72,7 +74,7 @@ struct CityNavigationDemo: View {
   @State private var carPosition: LatLngAltitude = coordinates[0]
   @State private var carHeading: Double = 135.0
 
-  // Initial street-corridor camera (range 130m, tilt 58°) positioned on Steuart St to avoid skyscraper occlusion
+  // Direct $camera binding uses absolute MSL altitude (15.0m along the Embarcadero / Market St corridor)
   @State private var camera: Camera = .init(
     center: .init(
       latitude: coordinates[0].latitude,
@@ -82,22 +84,38 @@ struct CityNavigationDemo: View {
     heading: 135.0,
     tilt: 58.0,
     roll: 0.0,
-    range: 130.0,
-    altitudeMode: .relativeToMesh
+    range: 130.0
   )
+
+  private var startFlyToCamera: Camera {
+    let pos = pathMetadata.position(at: 0, altitudeOffset: 1.0)
+    let initialCamHeading = pathMetadata.lookAheadHeading(
+      at: 0,
+      lookAheadDistance: cameraLookAheadMeters
+    )
+    return Camera(
+      center: .init(latitude: pos.latitude, longitude: pos.longitude, altitude: 15.0),
+      heading: initialCamHeading,
+      tilt: 58.0,
+      roll: 0.0,
+      range: 130.0,
+      altitudeMode: .relativeToMesh
+    )
+  }
 
   var body: some View {
     VStack(spacing: 0) {
       ZStack(alignment: .topLeading) {
         TimelineView(.animation(paused: !isAnimating)) { context in
           Map(camera: $camera, mode: .hybrid) {
-            // Polyline styled like Google Maps navigation ribbon (wide stroke, outer border, 2m extruded elevation)
+            // Static route polyline kept constant across frames to avoid 60Hz mesh re-tessellation
             Polyline(path: pathMetadata.points, altitudeMode: .relativeToMesh)
               .stroke(
                 .init(
                   strokeColor: .systemBlue,
                   strokeWidth: 14.0,
-                  outerColor: .white
+                  outerColor: .white,
+                  outerWidth: 0.25
                 )
               )
               .contour(
@@ -123,6 +141,17 @@ struct CityNavigationDemo: View {
               )
             }
           }
+          .flyCameraTo(
+            startFlyToCamera,
+            duration: 1.5,
+            trigger: flyToStartTrigger,
+            completion: {
+              guard isFlyingToStart else { return }
+              isFlyingToStart = false
+              lastFrameDate = .now
+              isAnimating = true
+            }
+          )
           .onChange(of: context.date) { _, newDate in
             if isAnimating {
               updateSimulation(at: newDate)
@@ -162,13 +191,20 @@ struct CityNavigationDemo: View {
         }
 
         HStack(spacing: 20) {
-          Button(isAnimating ? "Pause" : "Start Driving") {
-            isAnimating.toggle()
-            if isAnimating {
-              lastFrameDate = Date()
+          Button(isAnimating ? "Pause" : (isFlyingToStart ? "Aligning Camera…" : "Start Driving")) {
+            if isAnimating || isFlyingToStart {
+              isAnimating = false
+              isFlyingToStart = false
+            } else if accumulatedDistance == 0 {
+              isFlyingToStart = true
+              flyToStartTrigger += 1
+            } else {
+              lastFrameDate = .now
+              isAnimating = true
             }
           }
           .buttonStyle(.borderedProminent)
+          .disabled(isFlyingToStart)
 
           Button("Reset") {
             resetSimulation()
@@ -183,10 +219,15 @@ struct CityNavigationDemo: View {
     .onAppear {
       resetSimulation()
     }
+    .onDisappear {
+      isAnimating = false
+      isFlyingToStart = false
+    }
   }
 
   private func resetSimulation() {
     isAnimating = false
+    isFlyingToStart = false
     accumulatedDistance = 0.0
     lastFrameDate = nil
 
@@ -197,29 +238,27 @@ struct CityNavigationDemo: View {
     carPosition = pos
     carHeading = initialCarHeading
 
-    // Street-level camera (range 130m, tilt 58°) on Steuart St to avoid skyscraper occlusion
     camera = Camera(
       center: .init(latitude: pos.latitude, longitude: pos.longitude, altitude: 15.0),
       heading: initialCamHeading,
       tilt: 58.0,
       roll: 0.0,
-      range: 130.0,
-      altitudeMode: .relativeToMesh
+      range: 130.0
     )
   }
 
   private func updateSimulation(at currentDate: Date) {
     guard isAnimating else { return }
 
-    // Delta time step avoids teleporting when speed is adjusted dynamically
     let dt = currentDate.timeIntervalSince(lastFrameDate ?? currentDate)
     lastFrameDate = currentDate
+    guard dt > 0 && dt < 0.25 else { return }
 
     let speedMps = speedMph * 0.44704
     accumulatedDistance += dt * speedMps
 
     if accumulatedDistance > pathMetadata.totalLength {
-      accumulatedDistance = 0.0 // Loop continuously
+      accumulatedDistance = 0.0
     }
 
     // 1. Get exact position along path at constant velocity
@@ -228,20 +267,19 @@ struct CityNavigationDemo: View {
     // 2. Car model only turns when within 5 meters of a corner (prevents pre-turn lane drifting)
     let modelTurnHeading = pathMetadata.lookAheadHeading(at: accumulatedDistance, lookAheadDistance: 5.0)
 
-    // 3. Camera smoothly anticipates turns with the configurable look-ahead window (60m)
+    // 3. Camera smoothly anticipates turns with the configurable look-ahead window
     let camFollowHeading = pathMetadata.lookAheadHeading(at: accumulatedDistance, lookAheadDistance: cameraLookAheadMeters)
 
     carPosition = currentPos
     carHeading = modelTurnHeading
 
-    // 4. Smooth Camera Follow
+    // 4. Smooth Camera Follow (direct $camera updates interpret center.altitude as absolute MSL)
     camera = Camera(
       center: .init(latitude: currentPos.latitude, longitude: currentPos.longitude, altitude: 15.0),
       heading: camFollowHeading,
       tilt: 58.0,
       roll: 0.0,
-      range: 130.0,
-      altitudeMode: .relativeToMesh
+      range: 130.0
     )
   }
 }

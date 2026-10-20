@@ -16,7 +16,6 @@ import Foundation
 import GoogleMaps3D
 
 extension Camera {
-  //public static var sanFrancisco: Camera = .init(longitude: -122.08, latitude: 37.39)
   public static var sanFrancisco: Camera = .init(
     center: .init(latitude: 37.7845812, longitude: -122.3660241, altitude: 585),
     heading: 288.0,
@@ -59,7 +58,7 @@ extension Camera {
   public static var newYork: Camera = .init(
     center: .init(latitude: 40.701564738850095, longitude: -74.0137093075384, altitude: 250),
     heading: 356,
-    tilt: 64,
+    tilt: 65,
     roll: 0,
     range: 400
   )
@@ -67,7 +66,7 @@ extension Camera {
   public static var london: Camera = .init(
     center: .init(latitude: 51.513853, longitude: -0.098589, altitude: 275),
     heading: 87.76,
-    tilt: 74,
+    tilt: 64,
     roll: 0,
     range: 600
   )
@@ -78,8 +77,7 @@ extension Camera {
     tilt: 75,
     roll: 0.0,
     range: 200,
-    fieldOfView: .degrees(100),
-    altitudeMode: .relativeToGround
+    fieldOfView: .degrees(75)
   )
 
   public static var devilsTower: Camera = .init(
